@@ -1,0 +1,497 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "tests/28_ai_mapping_verification.spec.ts",
+      "tests/26_demo_credentials_personas.spec.ts"
+    ],
+    "configFile": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\playwright.config.ts",
+    "rootDir": "C:/dhash/hackathon n events/INDUSTRIX/backend codex/frontend/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/dhash/hackathon n events/INDUSTRIX/backend codex/frontend/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium-desktop",
+        "name": "chromium-desktop",
+        "testDir": "C:/dhash/hackathon n events/INDUSTRIX/backend codex/frontend/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "chromium-desktop",
+        "testDir": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests",
+        "snapshotDir": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:5173",
+          "trace": "retain-on-failure",
+          "screenshot": "on",
+          "video": "off",
+          "actionTimeout": 15000,
+          "navigationTimeout": 30000,
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/158.0.8127.18 Safari/537.36",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "chromium-desktop"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "tests/test-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.65.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "26_demo_credentials_personas.spec.ts",
+      "file": "26_demo_credentials_personas.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "TraceCarbon — Demo Credentials & Quick Personas Verification",
+          "file": "26_demo_credentials_personas.spec.ts",
+          "line": 25,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TC-01: Verify Demo Credentials structure, tabs, counts and all 13 accounts autofill",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8535,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-09T19:25:33.328Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\test-results\\26_demo_credentials_person-4f159-nd-all-13-accounts-autofill-chromium-desktop\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b1ac814adc0a15c8e01b-eed86c1d1b28a147f625",
+              "file": "26_demo_credentials_personas.spec.ts",
+              "line": 27,
+              "column": 3
+            },
+            {
+              "title": "TC-02: Test successful authentication using autofilled credentials for all 3 roles",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8566,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-09T19:25:42.302Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\test-results\\26_demo_credentials_person-79e96-credentials-for-all-3-roles-chromium-desktop\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b1ac814adc0a15c8e01b-c4679099808b02ecd1d9",
+              "file": "26_demo_credentials_personas.spec.ts",
+              "line": 122,
+              "column": 3
+            },
+            {
+              "title": "TC-03: Responsive mobile viewport layout check",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2224,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-09T19:25:50.906Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\test-results\\26_demo_credentials_person-45284-obile-viewport-layout-check-chromium-desktop\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b1ac814adc0a15c8e01b-6c19c335aa102c29470f",
+              "file": "26_demo_credentials_personas.spec.ts",
+              "line": 164,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "28_ai_mapping_verification.spec.ts",
+      "file": "28_ai_mapping_verification.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "TraceCarbon — AI Mapping Verification & Empty/Invalid Response Fallback",
+          "file": "28_ai_mapping_verification.spec.ts",
+          "line": 14,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TC-01: Live AI mapping populated visibly with exact schema and database upload binding",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 180000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 22725,
+                      "error": {
+                        "message": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"choice-spreadsheet-upload\"]').first()\u001b[22m\n",
+                        "stack": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"choice-spreadsheet-upload\"]').first()\u001b[22m\n\n    at C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts:55:23",
+                        "location": {
+                          "file": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts",
+                          "column": 23,
+                          "line": 55
+                        },
+                        "snippet": " \u001b[90m 53 |\u001b[39m       }\n \u001b[90m 54 |\u001b[39m       \u001b[36mconst\u001b[39m choiceBtn \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-testid=\"choice-spreadsheet-upload\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m       \u001b[36mawait\u001b[39m choiceBtn\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m     }\n \u001b[90m 57 |\u001b[39m\n \u001b[90m 58 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'h4:has-text(\"Select Utility or Operational Spreadsheet\")'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts",
+                            "column": 23,
+                            "line": 55
+                          },
+                          "message": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"choice-spreadsheet-upload\"]').first()\u001b[22m\n\n\n  53 |       }\n  54 |       const choiceBtn = page.locator('[data-testid=\"choice-spreadsheet-upload\"]').first();\n> 55 |       await choiceBtn.click();\n     |                       ^\n  56 |     }\n  57 |\n  58 |     await expect(page.locator('h4:has-text(\"Select Utility or Operational Spreadsheet\")')).toBeVisible({ timeout: 10000 });\n    at C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts:55:23"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-09T19:25:53.244Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\test-results\\28_ai_mapping_verification-038fc-and-database-upload-binding-chromium-desktop\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\test-results\\28_ai_mapping_verification-038fc-and-database-upload-binding-chromium-desktop\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\test-results\\28_ai_mapping_verification-038fc-and-database-upload-binding-chromium-desktop\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts",
+                        "column": 23,
+                        "line": 55
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7244de33c68e76e4fe2c-d70ececb8b8a6be889b2",
+              "file": "28_ai_mapping_verification.spec.ts",
+              "line": 16,
+              "column": 3
+            },
+            {
+              "title": "TC-02: HTTP 200 with empty mapping displays informative notice and retains manual fallback",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 22888,
+                      "error": {
+                        "message": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"choice-spreadsheet-upload\"]').first()\u001b[22m\n",
+                        "stack": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"choice-spreadsheet-upload\"]').first()\u001b[22m\n\n    at C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts:162:23",
+                        "location": {
+                          "file": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts",
+                          "column": 23,
+                          "line": 162
+                        },
+                        "snippet": " \u001b[90m 160 |\u001b[39m       }\n \u001b[90m 161 |\u001b[39m       \u001b[36mconst\u001b[39m choiceBtn \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-testid=\"choice-spreadsheet-upload\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 162 |\u001b[39m       \u001b[36mawait\u001b[39m choiceBtn\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 163 |\u001b[39m     }\n \u001b[90m 164 |\u001b[39m\n \u001b[90m 165 |\u001b[39m     \u001b[90m// Upload file\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts",
+                            "column": 23,
+                            "line": 162
+                          },
+                          "message": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"choice-spreadsheet-upload\"]').first()\u001b[22m\n\n\n  160 |       }\n  161 |       const choiceBtn = page.locator('[data-testid=\"choice-spreadsheet-upload\"]').first();\n> 162 |       await choiceBtn.click();\n      |                       ^\n  163 |     }\n  164 |\n  165 |     // Upload file\n    at C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts:162:23"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-09T19:26:19.788Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\test-results\\28_ai_mapping_verification-e5d76-and-retains-manual-fallback-chromium-desktop\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\test-results\\28_ai_mapping_verification-e5d76-and-retains-manual-fallback-chromium-desktop\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\test-results\\28_ai_mapping_verification-e5d76-and-retains-manual-fallback-chromium-desktop\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts",
+                        "column": 23,
+                        "line": 162
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7244de33c68e76e4fe2c-923b854e601b71791b1f",
+              "file": "28_ai_mapping_verification.spec.ts",
+              "line": 118,
+              "column": 3
+            },
+            {
+              "title": "TC-03: HTTP 200 with null columns displays informative notice and retains manual fallback",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-desktop",
+                  "projectName": "chromium-desktop",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 22664,
+                      "error": {
+                        "message": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"choice-spreadsheet-upload\"]').first()\u001b[22m\n",
+                        "stack": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"choice-spreadsheet-upload\"]').first()\u001b[22m\n\n    at C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts:252:23",
+                        "location": {
+                          "file": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts",
+                          "column": 23,
+                          "line": 252
+                        },
+                        "snippet": " \u001b[90m 250 |\u001b[39m       }\n \u001b[90m 251 |\u001b[39m       \u001b[36mconst\u001b[39m choiceBtn \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-testid=\"choice-spreadsheet-upload\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 252 |\u001b[39m       \u001b[36mawait\u001b[39m choiceBtn\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 253 |\u001b[39m     }\n \u001b[90m 254 |\u001b[39m\n \u001b[90m 255 |\u001b[39m     \u001b[90m// Upload file\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts",
+                            "column": 23,
+                            "line": 252
+                          },
+                          "message": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"choice-spreadsheet-upload\"]').first()\u001b[22m\n\n\n  250 |       }\n  251 |       const choiceBtn = page.locator('[data-testid=\"choice-spreadsheet-upload\"]').first();\n> 252 |       await choiceBtn.click();\n      |                       ^\n  253 |     }\n  254 |\n  255 |     // Upload file\n    at C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts:252:23"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-09T19:26:46.805Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\test-results\\28_ai_mapping_verification-17349-and-retains-manual-fallback-chromium-desktop\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\test-results\\28_ai_mapping_verification-17349-and-retains-manual-fallback-chromium-desktop\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\test-results\\28_ai_mapping_verification-17349-and-retains-manual-fallback-chromium-desktop\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\dhash\\hackathon n events\\INDUSTRIX\\backend codex\\frontend\\tests\\28_ai_mapping_verification.spec.ts",
+                        "column": 23,
+                        "line": 252
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7244de33c68e76e4fe2c-8a5ce01b66e9a6f2cec6",
+              "file": "28_ai_mapping_verification.spec.ts",
+              "line": 203,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-09T19:25:31.301Z",
+    "duration": 100640.05,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  }
+}

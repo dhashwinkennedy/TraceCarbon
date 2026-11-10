@@ -1,0 +1,7 @@
+sector,organization,metric_name,benchmark_value,unit,geographic_scope,citation
+Steel,World Steel Association,BF-BOF Specific GHG Intensity,2.32,tCO2e / t crude steel,Global Average,Worldsteel Sustainability Indicators 2023
+Steel,"Council on Energy, Environment and Water (CEEW)",Indian BF-BOF Steelmaking Intensity,2.45,tCO2e / t crude steel,India,CEEW Industrial Decarbonisation Dashboard 2024
+Aluminium,International Aluminium Institute (IAI),Primary Aluminium Smelting GHG Intensity,15.1,tCO2e / t primary Al,Global Average,IAI Life Cycle Carbon Footprint Report 2023
+Cement,Global Cement and Concrete Association (GCCA),Global Net Specific CO2,558.0,kg CO2 / t cementitious,Global Average,GCCA GNR Project 2023 Report
+Cement,Cement Manufacturers Association (CMA India),Indian Average Specific Net CO2,562.0,kg CO2 / t cementitious,India,CMA India Low Carbon Technology Roadmap
+Paper,Indian Paper Manufacturers Association (IPMA),Specific Energy per Tonne Paper,26.5,GJ / MT paper,India,IPMA Energy Benchmark Survey 2024

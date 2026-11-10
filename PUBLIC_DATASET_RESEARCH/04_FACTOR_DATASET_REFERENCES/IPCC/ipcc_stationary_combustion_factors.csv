@@ -1,0 +1,7 @@
+fuel_name,fuel_category,ncv_default_gj_per_tonne,emission_factor_kg_co2_per_tj,emission_factor_kg_co2_per_gj,derived_physical_factor_estimate,physical_conversion_assumptions,uncertainty_range_pct,ipcc_reference_table
+High Speed Diesel (HSD),Liquid Fossil,43.0,74100.0,74.1,2.68 kg CO2 / Litre,Density 0.84 kg/L; NCV 43.0 GJ/t (36.12 MJ/L),+/- 2.0%,2006 Vol 2 Ch 2 Table 2.2
+Furnace Oil / HFO,Liquid Fossil,40.4,77400.0,77.4,3.13 kg CO2 / Litre,Density 1.00 kg/L; NCV 40.4 GJ/t (40.40 MJ/L),+/- 3.0%,2006 Vol 2 Ch 2 Table 2.2
+Natural Gas,Gaseous Fossil,48.0,56100.0,56.1,2.13 kg CO2 / SCM,Standard density 0.78 kg/m3; NCV 48.0 GJ/t (37.4 MJ/SCM),+/- 2.5%,2006 Vol 2 Ch 2 Table 2.2
+Non-Coking Indian Coal,Solid Fossil,16.5,96100.0,96.1,1585.65 kg CO2 / MT,NCV 16.5 GJ/t (Indian Coal Grade G9-G11),+/- 7.0%,2006 Vol 2 Ch 2 Table 2.2
+Liquefied Petroleum Gas (LPG),Liquid/Gaseous Fossil,47.3,63100.0,63.1,2.98 kg CO2 / kg,NCV 47.3 GJ/t (47.3 MJ/kg),+/- 3.0%,2006 Vol 2 Ch 2 Table 2.2
+Solid Biomass / Wood Residue,Biomass Solid,15.6,112000.0,112.0,1747.20 kg CO2 / MT (Biogenic Memo),NCV 15.6 GJ/t; Reported under memo items,+/- 10.0%,2006 Vol 2 Ch 2 Table 2.2

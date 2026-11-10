@@ -1,0 +1,11 @@
+cornerstone_sector_code,sector_description,spend_factor_kgco2e_per_usd,spend_factor_kgco2e_per_inr_fy24,scope3_category,uncertainty_pct,applicable_demo_supplier,notes
+3311,Iron and Steel Mills and Ferroalloy,0.642,0.00775,Category 1: Purchased Goods,+/- 15%,AxiomX Steel Suppliers (SUP-001),Direct RBI FX conversion (82.80 INR/USD). Unverified deflators removed.
+3262,Rubber Product Manufacturing,0.485,0.00586,Category 1: Purchased Goods,+/- 14%,AxiomX Rubber Suppliers (SUP-002),Direct RBI FX conversion (82.80 INR/USD). Unverified deflators removed.
+3313,Alumina and Aluminum Production,0.78,0.00942,Category 1: Purchased Goods,+/- 16%,AxiomX Aluminium Suppliers (SUP-003),Direct RBI FX conversion (82.80 INR/USD). Unverified deflators removed.
+3273,Cement and Concrete Product Manufacturing,1.28,0.01546,Category 1: Purchased Goods,+/- 12%,AxiomX Cement Suppliers (SUP-004),Direct RBI FX conversion (82.80 INR/USD). Unverified deflators removed.
+3251,Basic Chemical Manufacturing,0.52,0.00628,Category 1: Purchased Goods,+/- 16%,AxiomX Chemical Suppliers (SUP-005),Direct RBI FX conversion (82.80 INR/USD). Unverified deflators removed.
+3222,Converted Paper Product Manufacturing,0.435,0.00525,Category 1: Purchased Goods,+/- 15%,AxiomX Packaging Suppliers (SUP-006),Direct RBI FX conversion (82.80 INR/USD). Unverified deflators removed.
+3132,Fabric Mills and Textile Furnishings,0.395,0.00477,Category 1: Purchased Goods,+/- 14%,AxiomX Textile Suppliers (SUP-007),Direct RBI FX conversion (82.80 INR/USD). Unverified deflators removed.
+3272,Glass and Glass Product Manufacturing,0.58,0.007,Category 1: Purchased Goods,+/- 15%,AxiomX Glass Suppliers (SUP-008),Direct RBI FX conversion (82.80 INR/USD). Unverified deflators removed.
+3261,Plastics Product Manufacturing,0.445,0.00537,Category 1: Purchased Goods,+/- 14%,AxiomX Polymer Suppliers (SUP-009),Direct RBI FX conversion (82.80 INR/USD). Unverified deflators removed.
+3336,"Turbine, Generator, and Heavy Power Transmission",0.315,0.0038,Category 2: Capital Goods,+/- 18%,AxiomX Machinery Suppliers (SUP-010),Direct RBI FX conversion (82.80 INR/USD). Unverified deflators removed.

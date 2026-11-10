@@ -1,0 +1,31 @@
+Sector,Candidate_Company,Regulatory_Transparency_25,Scope_Granularity_25,Physical_Activity_Reporting_20,Third_Party_Assurance_15,Scope3_and_Cat2_Alignment_15,Total_Score_100,Selection_Outcome,Selection_Decision_Rationale
+Steel,JSW Steel Limited,25,24,20,15,12,96,Selected,"Pristine BRSR Core disclosures, reasonable assurance by DNV, clear crude steel intensity."
+Steel,Tata Steel Limited,25,24,19,14,12,94,Alternate,High quality data; JSW selected for explicit standalone Indian domestic mill boundaries.
+Steel,Jindal Steel & Power,22,21,18,14,13,88,Excluded,Less granular Scope 3 upstream logistics and material breakdowns.
+Rubber,Apollo Tyres Limited,25,24,20,14,12,95,Selected,"Pristine physical production metrics, comprehensive fuel breakdowns, verified TUV assurance."
+Rubber,CEAT Limited,23,22,19,14,12,90,Alternate,Valid candidate; Apollo Tyres possesses more explicit fuel-level split.
+Rubber,MRF Limited,21,19,17,13,12,82,Excluded,Limited Scope 3 disclosure and aggregated fuel metrics.
+Aluminium,Hindalco Industries Limited,25,24,20,15,11,95,Selected,"Benchmark primary smelter data, audited specific energy (69.81 GJ/t) and Bureau Veritas assurance."
+Aluminium,NALCO,23,22,18,14,12,89,Alternate,PSU disclosure format; Hindalco provides deeper private supplier commercial fidelity.
+Aluminium,Vedanta Limited,24,23,18,14,12,91,Alternate,Multi-commodity conglomerate; Hindalco provides cleaner pure-play aluminium.
+Cement,UltraTech Cement Limited,25,24,20,15,12,96,Selected,"India's largest cement producer, world-class clinker-to-cement ratio, BDO India assurance."
+Cement,Ambuja Cements Limited,24,23,19,14,13,93,Alternate,Adani transition phase; UltraTech provides multi-year longitudinal stability.
+Cement,ACC Limited,23,23,18,14,13,91,Alternate,Sister entity to Ambuja; UltraTech leads in scale and assurance depth.
+Chemicals,Tata Chemicals Limited,25,24,19,14,12,94,Selected,"Exemplary chemical manufacturing metrics, verified biogenic emissions and KPMG assurance."
+Chemicals,Aarti Industries Limited,23,22,18,14,12,89,Alternate,Specialty chemical producer; Tata Chemicals offers clearer basic chemical mass balances.
+Chemicals,Atul Limited,22,21,17,14,12,86,Excluded,Absence of verified Scope 3 upstream reporting.
+Packaging/Paper,JK Paper Limited,24,23,19,12,12,90,Selected,Exceptional renewable biomass energy reporting (12.02M GJ) and technical laboratory validation.
+Packaging/Paper,West Coast Paper Mills,22,20,17,13,12,84,Alternate,Smaller scale and lower Scope 3 reporting resolution.
+Packaging/Paper,Century Textiles & Pulp,23,21,18,13,12,87,Alternate,Mixed paper and textile business divisions complicate pure packaging intensity extraction.
+Textiles,Arvind Limited,24,23,19,14,13,93,Selected,"Pioneer in sustainable denim, comprehensive Higg Index and Intertek third-party assurance."
+Textiles,Vardhman Textiles Limited,23,22,18,13,12,88,Alternate,High production fidelity but lacks independent third-party assurance statement.
+Textiles,Welspun Living Limited,23,22,18,14,13,90,Alternate,Strong home textile metrics; Arvind provides cleaner fabric meterage units for Scope3Track.
+Glass,Asahi India Glass Limited,23,22,19,9,13,86,Selected,Pure-play automotive safety and architectural glass manufacturer; score adjusted for self-certification.
+Glass,Borosil Renewables Limited,22,21,17,13,12,85,Alternate,Solar glass niche; AIS matches automotive and capital goods supply chains better.
+Glass,Saint-Gobain India Pvt Ltd,19,19,16,12,12,78,Excluded,Unlisted subsidiary; lacks statutory standalone SEBI BRSR filings.
+Polymers,The Supreme Industries Limited,24,23,19,9,12,87,Selected,Largest plastics processor in India; pristine electricity and fuel disclosures; score adjusted for self-certification.
+Polymers,Astral Limited,23,22,18,14,12,89,Alternate,Excellent piping data; Supreme Industries possesses broader cross-sector polymer product coverage.
+Polymers,Finolex Industries Limited,22,21,18,14,12,87,Alternate,Captive PVC resin plant makes boundary less representative of pure converting suppliers.
+Machinery,BHEL,24,24,19,14,13,94,Selected,Prime Indian industrial machinery giant; ideal for Category 2 Capital Goods; Bureau Veritas assurance.
+Machinery,Thermax Limited,23,22,18,14,13,90,Alternate,High quality clean energy equipment manufacturer; BHEL provides greater heavy equipment footprint.
+Machinery,Siemens Limited (India),22,22,18,14,12,88,Alternate,Year-ending September cycle creates reporting period offset with Indian April-March fiscal year.

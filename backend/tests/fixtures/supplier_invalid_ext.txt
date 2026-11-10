@@ -1,0 +1,2 @@
+electricity_kwh,50000
+diesel_litres,1500

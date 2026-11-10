@@ -1,0 +1,106 @@
+# ==============================================================================
+# TRACECARBON — ROOT .gitignore
+# ==============================================================================
+
+# Environment & Secrets (CRITICAL)
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+*CREDENTIALS*.txt
+!*.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+eggs/
+.eggs/
+
+# Node.js & Frontend Build Outputs
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/tsconfig.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Playwright & Automated Test Artifacts
+test-results/
+playwright-report/
+frontend/test-results/
+frontend/playwright-report/
+.cache/
+
+# Runtime Logs
+*.log
+logs/
+*.log.*
+
+# Scratch & Temporary Testing Dumps
+scratch/
+temp_report_render.html
+
+# Local Pre-Migration Database Backups
+BACKUP_BEFORE_AXIOMX_DATASET_RESET/
+
+# OS Specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+
+# IDE Specific
+.idea/
+*.sublime-workspace
+*.sublime-project
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ==============================================================================
+# CRITICAL PRESERVATION RULES: DO NOT IGNORE DEMONSTRATION & RESEARCH DATASETS
+# ==============================================================================
+!SUPPLIER_ANNUAL_DATASETS_2Y/
+!SUPPLIER_ANNUAL_DATASETS_2Y/**
+!PUBLIC_DATASET_RESEARCH/
+!PUBLIC_DATASET_RESEARCH/**
+!PUBLIC_METHOD_DATASETS/
+!PUBLIC_METHOD_DATASETS/**
+!backend/tests/fixtures/
+!backend/tests/fixtures/**
+!backend/app/scripts/
+!backend/app/scripts/**
+!scripts/
+!scripts/**
+!docs/
+!docs/**

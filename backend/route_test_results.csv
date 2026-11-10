@@ -1,0 +1,132 @@
+method,path,required_role,test_scenario,http_status,expected_result,actual_result,database_effect,status
+GET,/health,public,Health check probe,200,HTTP 200 with status ok,"{'status': 'ok', 'service': 'Scope3Track'}",Read-only,PASS
+GET,/ready,public,Readiness check probe,200,HTTP 200 with status ready,{'status': 'ready'},Verified DB ping and user query,PASS
+GET,/openapi.json,public,OpenAPI schema retrieval,200,HTTP 200 with JSON schema,68 paths found,Read-only,PASS
+GET,/docs,public,Swagger UI HTML page,200,HTTP 200 with HTML content,Swagger HTML served,Read-only,PASS
+GET,/docs/oauth2-redirect,public,Swagger OAuth2 redirect handler,200,HTTP 200,HTTP 200,Read-only,PASS
+GET,/redoc,public,ReDoc HTML documentation,200,HTTP 200 with HTML,ReDoc HTML served,Read-only,PASS
+POST,/api/v1/auth/login,public,Valid login for manufacturer (mfg),200,HTTP 200 with JWT and role manufacturer,"Token generated, role=manufacturer",User verified in DB,PASS
+POST,/api/v1/auth/login,public,Valid login for supplier (sup1),200,HTTP 200 with JWT and role supplier,"Token generated, role=supplier",User verified in DB,PASS
+POST,/api/v1/auth/login,public,Valid login for supplier (sup2),200,HTTP 200 with JWT and role supplier,"Token generated, role=supplier",User verified in DB,PASS
+POST,/api/v1/auth/login,public,Valid login for auditor (aud1),200,HTTP 200 with JWT and role auditor,"Token generated, role=auditor",User verified in DB,PASS
+POST,/api/v1/auth/login,public,Valid login for auditor (aud2),200,HTTP 200 with JWT and role auditor,"Token generated, role=auditor",User verified in DB,PASS
+POST,/api/v1/auth/login,public,Invalid password rejection,401,HTTP 401 Unauthorized,{'detail': 'Invalid email or password'},Read-only,PASS
+POST,/api/v1/auth/login,public,Unknown email rejection,401,HTTP 401 Unauthorized,{'detail': 'Invalid email or password'},Read-only,PASS
+GET,/api/v1/auth/me,manufacturer,Get current user profile for manufacturer,200,HTTP 200 with user profile role manufacturer,Role=manufacturer,Read user document,PASS
+GET,/api/v1/auth/me,supplier,Get current user profile for supplier,200,HTTP 200 with user profile role supplier,Role=supplier,Read user document,PASS
+GET,/api/v1/auth/me,auditor,Get current user profile for auditor,200,HTTP 200 with user profile role auditor,Role=auditor,Read user document,PASS
+GET,/api/v1/auth/me,authenticated,Missing auth header rejection,401,HTTP 401 Unauthorized,{'detail': 'Invalid or expired access token'},Read-only,PASS
+GET,/api/v1/auth/me,authenticated,Malformed JWT token rejection,401,HTTP 401 Unauthorized,{'detail': 'Invalid or expired access token'},Read-only,PASS
+POST,/api/v1/auth/change-password,authenticated,Change password successfully,200,HTTP 200 Password changed,{'message': 'Password changed'},Updated password_hash in DB verified,PASS
+POST,/api/v1/auth/change-password,authenticated,Incorrect current password rejected,400,HTTP 400 Current password incorrect,{'detail': 'Current password is incorrect'},Password remains unchanged,PASS
+GET,/api/v1/supplier/profile,supplier,Supplier 1 views own profile,200,HTTP 200 with supplier-xyz,Profile ID=supplier-xyz,Read supplier-xyz doc,PASS
+GET,/api/v1/supplier/submissions,supplier,Supplier 1 lists own submissions,200,HTTP 200 with supplier-xyz items,1 submissions found,Read submissions for supplier-xyz,PASS
+GET,/api/v1/supplier/submissions/{sid},supplier,Supplier 1 gets own submission,200,HTTP 200 with submission-xyz-2026-01,submission-xyz-2026-01,Read submission doc,PASS
+GET,/api/v1/supplier/submissions/{sid},supplier,Supplier 1 denied access to Supplier 2 submission,403,HTTP 403 Forbidden,{'detail': 'You can only access your own submissions'},Access blocked,PASS
+PATCH,/api/v1/supplier/submissions/{sid},supplier,Supplier 1 denied modifying Supplier 2 submission,403,HTTP 403 Forbidden,{'detail': 'You can only access your own submissions'},No DB change,PASS
+GET,/api/v1/manufacturer/profile,manufacturer,Supplier denied manufacturer profile,403,HTTP 403 Forbidden,{'detail': 'This role is not permitted for this action'},Access blocked,PASS
+GET,/api/v1/auditor/assignments,auditor,Supplier denied auditor assignments,403,HTTP 403 Forbidden,{'detail': 'This role is not permitted for this action'},Access blocked,PASS
+GET,/api/v1/auditor/assignments,auditor,Auditor 1 lists assigned suppliers,200,HTTP 200 with supplier-xyz assigned,Assignments: 1,Read auditor_assignments,PASS
+GET,/api/v1/auditor/submissions,auditor,Auditor 1 lists assigned submissions,200,HTTP 200 including submission-xyz,Submissions: 1,Filtered by assigned supplier,PASS
+GET,/api/v1/auditor/submissions/{sid},auditor,Auditor 1 views assigned submission,200,HTTP 200 with submission-xyz,submission-xyz-2026-01,Read submission doc,PASS
+GET,/api/v1/auditor/submissions/{sid},auditor,Auditor 1 denied unassigned submission,403,HTTP 403 Forbidden,{'detail': 'Submission is not assigned to you'},Access blocked,PASS
+GET,/api/v1/manufacturer/purchase-records,manufacturer,Auditor denied purchase records,403,HTTP 403 Forbidden,{'detail': 'This role is not permitted for this action'},Access blocked,PASS
+POST,/api/v1/supplier/submissions/{sid}/reduction-suggestions,supplier,Auditor denied reduction suggestions,403,HTTP 403 Forbidden,{'detail': 'This role is not permitted for this action'},Access blocked,PASS
+POST,/api/v1/auditor/submissions/{sid}/comments,auditor,Auditor adds comment to assigned submission,201,HTTP 201 with created comment,832f0571-a059-4222-b7a9-e7fd488e4695,Inserted into comments collection,PASS
+GET,/api/v1/auditor/submissions/{sid}/comments,auditor,Auditor lists comments on submission,200,HTTP 200 with comments list,1 comments,Read from comments collection,PASS
+POST,/api/v1/auditor/submissions/{sid}/clarifications,auditor,Auditor requests clarification,201,HTTP 201 and submission status=clarification_requested,"ID=f5b202d6-7122-4233-baa6-629392cc4df1, status=clarification_requested","Inserted clarification, updated submission status",PASS
+PATCH,/api/v1/auditor/clarifications/{cid},auditor,Auditor marks clarification resolved,200,HTTP 200 with status=resolved,resolved,Updated status in clarifications,PASS
+GET,/api/v1/manufacturer/profile,manufacturer,Get manufacturer profile,200,HTTP 200 with ABC Manufacturing,ABC Manufacturing,Read manufacturer-1 doc,PASS
+PATCH,/api/v1/manufacturer/profile,manufacturer,Update manufacturer profile,200,HTTP 200 with updated fields,+1-555-9999,Updated manufacturer doc in DB,PASS
+POST,/api/v1/manufacturer/suppliers,manufacturer,Create new supplier account,201,HTTP 201 with new supplier ID,59a4a558-3e02-4d91-a6df-b96924a0afca,"Inserted supplier, user, and requirements docs",PASS
+GET,/api/v1/manufacturer/suppliers,manufacturer,List suppliers,200,HTTP 200 with supplier list,3 suppliers,Read suppliers collection,PASS
+GET,/api/v1/manufacturer/suppliers/{sid},manufacturer,Get single supplier details,200,HTTP 200 with ID 59a4a558-3e02-4d91-a6df-b96924a0afca,59a4a558-3e02-4d91-a6df-b96924a0afca,Read supplier doc,PASS
+PATCH,/api/v1/manufacturer/suppliers/{sid},manufacturer,Update supplier contact details,200,HTTP 200 with updated details,Updated phone and plant location,Updated supplier doc in DB,PASS
+PATCH,/api/v1/manufacturer/suppliers/{sid}/status,manufacturer,Toggle supplier active status,200,HTTP 200 with active=True,True,Updated active in supplier and user docs,PASS
+PUT,/api/v1/manufacturer/suppliers/{sid}/requirements,manufacturer,Configure supplier reporting requirements,200,HTTP 200 with 2 requirements,2 requirements,Replaced supplier_requirements in DB,PASS
+GET,/api/v1/manufacturer/suppliers/{sid}/requirements,manufacturer,Retrieve supplier requirements,200,HTTP 200 with requirements list,2 items,Read supplier_requirements,PASS
+POST,/api/v1/manufacturer/auditors,manufacturer,Create new auditor account,201,HTTP 201 with new auditor ID,9ae006c7-1951-4ed9-bf4b-db0f2a338aa2,Inserted auditor and user docs,PASS
+GET,/api/v1/manufacturer/auditors,manufacturer,List auditors,200,HTTP 200 with auditors list,3 auditors,Read auditors collection,PASS
+GET,/api/v1/manufacturer/auditors/{aid},manufacturer,Get auditor details,200,HTTP 200 with ID 9ae006c7-1951-4ed9-bf4b-db0f2a338aa2,9ae006c7-1951-4ed9-bf4b-db0f2a338aa2,Read auditor doc,PASS
+PATCH,/api/v1/manufacturer/auditors/{aid},manufacturer,Update auditor name,200,HTTP 200 with updated name,Auditor Senior Lead,Updated auditor doc in DB,PASS
+PATCH,/api/v1/manufacturer/auditors/{aid}/status,manufacturer,Toggle auditor active status,200,HTTP 200 with active=True,True,Updated active in auditor and user docs,PASS
+POST,/api/v1/manufacturer/auditors/{aid}/assignments,manufacturer,Assign auditor to supplier,201,HTTP 201 with assignment ID,2e6a597f-c1b7-4f09-a70e-0194f2172a67,Inserted auditor_assignments doc,PASS
+GET,/api/v1/manufacturer/auditors/{aid}/assignments,manufacturer,Retrieve assignments for auditor,200,HTTP 200 with assignments list,1 assignments,Read auditor_assignments,PASS
+DELETE,/api/v1/manufacturer/auditors/{aid}/assignments/{assignment_id},manufacturer,Remove auditor assignment,204,HTTP 204 No Content,Deleted,Deleted from auditor_assignments,PASS
+POST,/api/v1/manufacturer/products,manufacturer,Create new product,201,HTTP 201 with product ID,75cf7d1d-225b-4dec-ad6e-8977f9af9971,Inserted product doc in DB,PASS
+GET,/api/v1/manufacturer/products,manufacturer,List products,200,HTTP 200 with product items,4 products,Read products collection,PASS
+GET,/api/v1/manufacturer/products/{pid},manufacturer,Get single product details,200,HTTP 200 with ID 75cf7d1d-225b-4dec-ad6e-8977f9af9971,75cf7d1d-225b-4dec-ad6e-8977f9af9971,Read product doc,PASS
+PATCH,/api/v1/manufacturer/products/{pid},manufacturer,Update product details,200,HTTP 200 with updated unit,tonnes,Updated product doc in DB,PASS
+PATCH,/api/v1/manufacturer/products/{pid}/status,manufacturer,Update product active status,200,HTTP 200 with active=True,True,Updated active in products,PASS
+GET,/api/v1/manufacturer/activity-library,manufacturer,Retrieve activity library,200,HTTP 200 with activity list,5 activities,Read activity_library,PASS
+GET,/api/v1/manufacturer/emission-factors,manufacturer,Retrieve emission factors list,200,HTTP 200 with factors list,5 factors,Read emission_factors,PASS
+GET,/api/v1/manufacturer/emission-factors/{fid},manufacturer,Get emission factor by ID,200,HTTP 200 with factor-steel,factor-steel,Read emission_factors doc,PASS
+GET,/api/v1/manufacturer/submissions,manufacturer,Manufacturer lists all submissions,200,HTTP 200 with submissions list,2 submissions,Read submissions collection,PASS
+GET,/api/v1/manufacturer/submissions/{sid},manufacturer,Manufacturer views submission details,200,HTTP 200 with submission-xyz-2026-01,submission-xyz-2026-01,Read submission doc,PASS
+GET,/api/v1/manufacturer/submissions/{sid}/validation,manufacturer,Manufacturer gets submission validation info,200,HTTP 200 with validation result,valid=True,Recomputed validation rules,PASS
+GET,/api/v1/manufacturer/submissions/{sid}/evidence,manufacturer,Manufacturer lists submission evidence,200,HTTP 200 with evidence items,0 items,Read evidence_documents,PASS
+GET,/api/v1/manufacturer/purchase-records/template,manufacturer,Download fixed purchase Excel template,200,HTTP 200 with exact 7 template columns,"Columns: ['supplier_id', 'product_name', 'reporting_month', 'purchased_quantity', 'quantity_unit', 'purchase_expenditure', 'currency']",StreamingResponse generated,PASS
+POST,/api/v1/manufacturer/purchase-records/uploads,manufacturer,Upload valid purchase Excel,201,HTTP 201 with 1 valid row and 0 invalid rows,"Valid=1, Invalid=0",Stored in purchase_uploads,PASS
+GET,/api/v1/manufacturer/purchase-records/uploads/{uid},manufacturer,Preview purchase upload details,200,HTTP 200 with ID 02d41d24-0b54-49a3-94e9-dd803fc01355,02d41d24-0b54-49a3-94e9-dd803fc01355,Read purchase_uploads,PASS
+POST,/api/v1/manufacturer/purchase-records/uploads/{uid}/confirm,manufacturer,Confirm purchase upload,200,HTTP 200 with imported=1,{'imported': 1},Inserted purchase record and confirmed upload,PASS
+GET,/api/v1/manufacturer/purchase-records,manufacturer,List saved purchase records,200,HTTP 200 with purchase records,2 records,Read purchase_records,PASS
+GET,/api/v1/manufacturer/purchase-records/{rid},manufacturer,Get single purchase record,200,HTTP 200 with ID purchase-xyz-steel-2026-01,purchase-xyz-steel-2026-01,Read purchase_records doc,PASS
+POST,/api/v1/manufacturer/purchase-records/uploads,manufacturer,Purchase test variant: Missing required column rejection,422,HTTP 422,Template header validation failed as expected,Verified validation logic,PASS
+POST,/api/v1/manufacturer/purchase-records/uploads,manufacturer,Purchase test variant: Incorrect header rejection,422,HTTP 422,Template header validation failed as expected,Verified validation logic,PASS
+POST,/api/v1/manufacturer/purchase-records/uploads,manufacturer,Purchase test variant: Invalid supplier ID flagged in invalid_rows,201,HTTP 201,Invalid rows count: 1,Verified validation logic,PASS
+POST,/api/v1/manufacturer/purchase-records/uploads,manufacturer,Purchase test variant: Invalid month flagged in invalid_rows,201,HTTP 201,Invalid rows count: 1,Verified validation logic,PASS
+POST,/api/v1/manufacturer/purchase-records/uploads,manufacturer,Purchase test variant: Invalid quantity flagged in invalid_rows,201,HTTP 201,Invalid rows count: 1,Verified validation logic,PASS
+POST,/api/v1/manufacturer/purchase-records/uploads,manufacturer,Purchase test variant: Negative expenditure flagged in invalid_rows,201,HTTP 201,Invalid rows count: 1,Verified validation logic,PASS
+POST,/api/v1/manufacturer/purchase-records/uploads,manufacturer,Purchase test variant: Missing currency flagged in invalid_rows,201,HTTP 201,Invalid rows count: 1,Verified validation logic,PASS
+POST,/api/v1/manufacturer/purchase-records/uploads,manufacturer,Purchase test variant: Multiple legitimate purchases accepted,201,HTTP 201,Accepted 2 rows,Verified validation logic,PASS
+GET,/api/v1/supplier/reporting-periods,supplier,Get supplier reporting periods info,200,HTTP 200 with monthly frequency,"{'frequency': 'monthly', 'format': 'YYYY-MM'}",Read configuration,PASS
+GET,/api/v1/supplier/reporting-requirements,supplier,Supplier views own reporting requirements,200,HTTP 200 with 4 requirements,4 items,Read supplier_requirements for sup1,PASS
+POST,/api/v1/supplier/submissions,supplier,Create monthly reporting draft (2026-02),201,HTTP 201 draft created,d5f3bdc6-0b28-4ee6-9d60-d8562e62acc2,Inserted draft submission in DB,PASS
+POST,/api/v1/supplier/submissions,supplier,Duplicate reporting period protection,409,HTTP 409 Conflict,{'detail': 'An active report already exists for this month'},Prevented duplicate active report,PASS
+PATCH,/api/v1/supplier/submissions/{sid},supplier,Update submission notes,200,HTTP 200 with updated notes,Draft under active entry,Updated notes in DB,PASS
+PUT,/api/v1/supplier/submissions/{sid}/activities/{activity_id},supplier,Enter activity electricity,200,HTTP 200 with electricity,100000.0,Pushed into submission activities array,PASS
+PUT,/api/v1/supplier/submissions/{sid}/activities/{activity_id},supplier,Enter activity diesel,200,HTTP 200 with diesel,2000.0,Pushed into submission activities array,PASS
+PUT,/api/v1/supplier/submissions/{sid}/activities/{activity_id},supplier,Enter activity production,200,HTTP 200 with production,500.0,Pushed into submission activities array,PASS
+PUT,/api/v1/supplier/submissions/{sid}/activities/{activity_id},supplier,Enter activity raw_material,200,HTTP 200 with raw_material,600.0,Pushed into submission activities array,PASS
+GET,/api/v1/supplier/submissions/{sid}/activities,supplier,List submission activities,200,HTTP 200 with 4 activities,4 activities,Read activities from submission,PASS
+DELETE,/api/v1/supplier/submissions/{sid}/activities/{activity_id},supplier,Delete activity from draft,204,HTTP 204 No Content,Deleted,Pulled raw_material from activities array,PASS
+GET,/api/v1/supplier/submissions/{sid}/validation,supplier,Validation reports incomplete draft,200,HTTP 200 valid=False,"{'valid': False, 'issues': [{'activity_id': 'raw_material', 'error': 'Required activity is missing'}]}",Computed missing raw_material,PASS
+POST,/api/v1/supplier/submissions/{sid}/validate,supplier,Validate endpoint reports incomplete,200,HTTP 200 valid=False,"{'valid': False, 'issues': [{'activity_id': 'raw_material', 'error': 'Required activity is missing'}]}",Computed missing raw_material,PASS
+POST,/api/v1/supplier/submissions/{sid}/submit,supplier,Reject incomplete draft submission,422,HTTP 422 Unprocessable Entity,"{'detail': {'valid': False, 'issues': [{'activity_id': 'raw_material', 'error': 'Required activity is missing'}]}}",Prevented submission of incomplete report,PASS
+POST,/api/v1/supplier/submissions/{sid}/submit,supplier,Submit complete monthly report,200,HTTP 200 status=submitted,submitted,Updated status to submitted in DB,PASS
+GET,/api/v1/supplier/submissions/{sid}/clarifications,supplier,Supplier views clarification requests,200,HTTP 200 with clarification items,1 items,Read clarifications collection,PASS
+POST,/api/v1/supplier/submissions/{sid}/clarifications/{cid}/respond,supplier,Supplier responds to clarification,200,HTTP 200 response stored & status=response_submitted,Status=response_submitted,Updated clarification and submission status,PASS
+POST,/api/v1/supplier/submissions/{sid}/spreadsheet-uploads,supplier,Upload valid spreadsheet (.xlsx),201,HTTP 201 with extracted headers and sample,"Headers: ['electricity_kwh', 'diesel_litres', 'production_tonnes', 'raw_material_tonnes']",Stored in supplier_spreadsheet_uploads,PASS
+GET,/api/v1/supplier/submissions/{sid}/spreadsheet-uploads/{uid},supplier,Get parsed spreadsheet info,200,HTTP 200 with ID 7b0407ef-3b0a-4218-a5a8-f922bcf68a62,7b0407ef-3b0a-4218-a5a8-f922bcf68a62,Read supplier_spreadsheet_uploads doc,PASS
+POST,/api/v1/supplier/submissions/{sid}/spreadsheet-uploads/{uid}/ai-map,supplier,Live AI spreadsheet column mapping,200,HTTP 200 with suggestions and requires_supplier_confirmation=True,"[{'activity_id': 'electricity', 'column': 'electricity_kwh', 'confidence': 1.0, 'reason': ""Header matches activity 'electricity' and expected unit 'kWh'.""}, {'activity_id': 'diesel', 'column': 'diesel_litres', 'confidence': 1.0, 'reason': ""Header matches activity 'diesel' and expected unit 'litres'.""}, {'activity_id': 'production', 'column': 'production_tonnes', 'confidence': 1.0, 'reason': ""Header matches activity 'production' and expected unit 'tonnes'.""}, {'activity_id': 'raw_material', 'column': 'raw_material_tonnes', 'confidence': 1.0, 'reason': ""Header matches activity 'raw_material' and expected unit 'tonnes'.""}]",Advisory only; no DB writes to submission,PASS
+PUT,/api/v1/supplier/submissions/{sid}/spreadsheet-uploads/{uid}/mapping,supplier,Supplier confirms column mappings,200,HTTP 200 with confirmed mapping,"{'electricity': {'column': 'electricity_kwh', 'unit': 'kWh'}, 'diesel': {'column': 'diesel_litres', 'unit': 'litres'}, 'production': {'column': 'production_tonnes', 'unit': 'tonnes'}, 'raw_material': {'column': 'raw_material_tonnes', 'unit': 'tonnes'}}",Saved mapping in supplier_spreadsheet_uploads,PASS
+POST,/api/v1/supplier/submissions/{sid}/spreadsheet-uploads/{uid}/validate,supplier,Validate mapped spreadsheet data,200,HTTP 200 with valid=True and preview,True,Preview computed,PASS
+POST,/api/v1/supplier/submissions/{sid}/spreadsheet-uploads/{uid}/import,supplier,Import mapped spreadsheet values into draft,200,HTTP 200 with 4 imported activities,4 activities imported,Updated activities in submission,PASS
+POST,/api/v1/supplier/submissions/{sid}/spreadsheet-uploads,supplier,Spreadsheet variant: Multiple worksheets parsed,201,HTTP 201,Status 201,Verified upload validation,PASS
+POST,/api/v1/supplier/submissions/{sid}/spreadsheet-uploads,supplier,Spreadsheet variant: Missing columns uploaded,201,HTTP 201,Status 201,Verified upload validation,PASS
+POST,/api/v1/supplier/submissions/{sid}/spreadsheet-uploads,supplier,Spreadsheet variant: Invalid numeric uploaded,201,HTTP 201,Status 201,Verified upload validation,PASS
+POST,/api/v1/supplier/submissions/{sid}/spreadsheet-uploads,supplier,Spreadsheet variant: Empty file rejected,422,HTTP 422,Status 422,Verified upload validation,PASS
+POST,/api/v1/supplier/submissions/{sid}/spreadsheet-uploads,supplier,Spreadsheet variant: Unsupported extension rejected,415,HTTP 415,Status 415,Verified upload validation,PASS
+POST,/api/v1/supplier/submissions/{sid}/evidence,supplier,Upload PDF evidence document,201,HTTP 201 with stored evidence metadata,6ef1bcdd-9d00-4e4b-a276-1e886eece829,Saved file to disk and record in evidence_documents,PASS
+GET,/api/v1/supplier/submissions/{sid}/evidence,supplier,Supplier lists evidence documents,200,HTTP 200 with evidence list,1 items,Read evidence_documents,PASS
+GET,/api/v1/auditor/submissions/{sid}/evidence,auditor,Auditor lists evidence for assigned submission,200,HTTP 200 with evidence list,1 items,Read evidence_documents,PASS
+POST,/api/v1/auditor/submissions/{sid}/ai/evidence-review,auditor,Auditor runs AI evidence review on PDF,200,HTTP 200 with structured assessment and rating in Weak/Medium/Good,Good,"PyMuPDF extracted text, assessment stored in ai_assessments",PASS
+POST,/api/v1/auditor/submissions/{sid}/ai/report-quality,auditor,Auditor runs AI report quality assessment,200,HTTP 200 with rating in Good/Needs attention/Poor,Needs attention,Assessment stored in ai_assessments,PASS
+GET,/api/v1/auditor/submissions/{sid}/ai-assessments,auditor,Auditor retrieves stored AI assessments,200,HTTP 200 with assessment items,2 assessments,Read ai_assessments,PASS
+DELETE,/api/v1/supplier/submissions/{sid}/evidence/{eid},supplier,Delete evidence from draft submission,204,HTTP 204 No Content,Deleted,Removed file and DB record,PASS
+POST,/api/v1/manufacturer/calculations,manufacturer,Calculate product-factor emissions,201,HTTP 201 with result_value=210.0,210.0,Inserted calculation_runs doc,PASS
+POST,/api/v1/manufacturer/calculations,manufacturer,Calculate product-factor emissions (1.2 factor -> 120.0),201,HTTP 201 with result_value=120.0,120.0,Inserted calculation_runs doc,PASS
+POST,/api/v1/manufacturer/calculations,manufacturer,Calculate activity-based emissions (10% allocation -> 4536.0),201,HTTP 201 with result_value=4536.0,4536.0,Inserted calculation_runs doc,PASS
+POST,/api/v1/manufacturer/calculations,manufacturer,"Calculate spend-based emissions (1,000,000 * 0.2 -> 200000.0)",201,HTTP 201 with result_value=200000.0,200000.0,Inserted calculation_runs doc,PASS
+GET,/api/v1/manufacturer/calculations,manufacturer,List calculation runs,200,HTTP 200 with calculation runs list,4 runs,Read calculation_runs,PASS
+GET,/api/v1/manufacturer/calculations/{cid},manufacturer,Get single calculation run details,200,HTTP 200 with ID d2a06874-be89-469a-9a30-f0c50286d306,d2a06874-be89-469a-9a30-f0c50286d306,Read calculation_runs doc,PASS
+GET,/api/v1/manufacturer/calculations/{cid}/receipt,manufacturer,Get calculation receipt with audit formula,200,HTTP 200 with calculation receipt,Formula: purchased_quantity × product factor,Read calculation_runs audit metadata,PASS
+POST,/api/v1/manufacturer/calculations,manufacturer,Reject method mismatch with factor_type,422,HTTP 422 Selected method does not match factor type,{'detail': 'Selected method does not match factor type'},Prevented invalid calculation,PASS
+POST,/api/v1/manufacturer/calculations,manufacturer,Reject activity_based without allocation,422,HTTP 422 Missing allocation basis/value,{'detail': 'Activity-based calculation requires allocation_basis and allocation_value'},Prevented unallocated calculation,PASS
+POST,/api/v1/supplier/submissions/{sid}/reduction-suggestions,supplier,Live AI reduction suggestions request,200,HTTP 200 with structured suggestions array,4,Stored assessment in ai_assessments,PASS
+GET,/api/v1/supplier/submissions/{sid}/reduction-suggestions,supplier,Retrieve reduction suggestions,200,HTTP 200 with items list,1 suggestions stored,Read ai_assessments,PASS
+GET,/api/v1/manufacturer/dashboard/summary,manufacturer,Get dashboard summary aggregates,200,HTTP 200 with combined_kgco2e=204866.0,Combined: 204866.0,Aggregated directly from calculation_runs & submissions,PASS
+GET,/api/v1/manufacturer/reports/emissions,manufacturer,Get emissions report,200,HTTP 200 with 4 runs,4 runs,Read calculation_runs,PASS
+GET,/api/v1/manufacturer/reports/suppliers,manufacturer,Get supplier-level emissions report,200,HTTP 200 with supplier emissions list,3 suppliers reported,Aggregated emissions per supplier,PASS
+PUT,/api/v1/supplier/submissions/{sid}/activities/{activity_id},supplier,"Unit conversion: 100 MWh = 100,000 kWh",200,HTTP 200 with normalised_value=100000.0 and original_value=100.0,"{'activity_id': 'electricity', 'value': 100000.0, 'unit': 'kWh', 'notes': 'Tested unit conversion from MWh', 'original_value': 100.0, 'original_unit': 'MWh', 'normalised_value': 100000.0, 'normalised_unit': 'kWh', 'conversion_metadata': {'from_unit': 'MWh', 'to_unit': 'kWh', 'factor': 1000.0, 'converted': True}, 'updated_at': '2026-11-07T14:28:29.655528+00:00'}",Normalized value and conversion metadata stored in DB,PASS
+PUT,/api/v1/supplier/submissions/{sid}/activities/{activity_id},supplier,Unsupported unit conversion (litres to tonnes) rejected,422,HTTP 422 Unsupported conversion,"{'detail': ""Unsupported unit conversion: cannot convert 'litres' to expected unit 'tonnes' without density or parameters""}",Prevented ungrounded unit conversion,PASS

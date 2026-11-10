@@ -1,0 +1,442 @@
+[
+  {
+    "method": "GET",
+    "path": "/openapi.json",
+    "name": "openapi"
+  },
+  {
+    "method": "GET",
+    "path": "/docs",
+    "name": "swagger_ui_html"
+  },
+  {
+    "method": "GET",
+    "path": "/docs/oauth2-redirect",
+    "name": "swagger_ui_redirect"
+  },
+  {
+    "method": "GET",
+    "path": "/redoc",
+    "name": "redoc_html"
+  },
+  {
+    "method": "GET",
+    "path": "/health",
+    "name": "health"
+  },
+  {
+    "method": "GET",
+    "path": "/ready",
+    "name": "ready"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/auth/login",
+    "name": "login"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auth/me",
+    "name": "me"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/auth/change-password",
+    "name": "change"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/profile",
+    "name": "manufacturer_profile"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/manufacturer/profile",
+    "name": "manufacturer_patch"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/manufacturer/suppliers",
+    "name": "create_supplier"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/suppliers",
+    "name": "suppliers"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/suppliers/{sid}",
+    "name": "supplier_get"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/manufacturer/suppliers/{sid}",
+    "name": "supplier_patch"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/manufacturer/suppliers/{sid}/status",
+    "name": "supplier_status"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/suppliers/{sid}/requirements",
+    "name": "req_get"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/manufacturer/suppliers/{sid}/requirements",
+    "name": "req_put"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/manufacturer/auditors",
+    "name": "auditor_create"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/auditors",
+    "name": "auditor_list"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/auditors/{aid}",
+    "name": "auditor_get"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/manufacturer/auditors/{aid}",
+    "name": "auditor_patch"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/manufacturer/auditors/{aid}/status",
+    "name": "auditor_status"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/manufacturer/auditors/{aid}/assignments",
+    "name": "assign"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/auditors/{aid}/assignments",
+    "name": "assignments"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/manufacturer/auditors/{aid}/assignments/{assignment_id}",
+    "name": "assignment_delete"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/manufacturer/products",
+    "name": "product_create"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/products",
+    "name": "product_list"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/products/{pid}",
+    "name": "product_get"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/manufacturer/products/{pid}",
+    "name": "product_patch"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/manufacturer/products/{pid}/status",
+    "name": "product_status"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/activity-library",
+    "name": "activities"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/emission-factors",
+    "name": "factors"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/emission-factors/{fid}",
+    "name": "factor"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/purchase-records/template",
+    "name": "purchase_template"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/manufacturer/purchase-records/uploads",
+    "name": "purchase_upload"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/purchase-records/uploads/{uid}",
+    "name": "purchase_preview"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/manufacturer/purchase-records/uploads/{uid}/confirm",
+    "name": "purchase_confirm"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/purchase-records",
+    "name": "purchase_list"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/purchase-records/{rid}",
+    "name": "purchase_get"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/supplier/profile",
+    "name": "supplier_profile"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/supplier/reporting-requirements",
+    "name": "supplier_requirements"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/supplier/reporting-periods",
+    "name": "periods"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/supplier/submissions",
+    "name": "sub_create"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/supplier/submissions",
+    "name": "sub_list"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/supplier/submissions/{sid}",
+    "name": "sub_get"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/supplier/submissions/{sid}",
+    "name": "sub_patch"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/supplier/submissions/{sid}/validation",
+    "name": "sub_validation"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/supplier/submissions/{sid}/activities/{activity_id}",
+    "name": "activity_put"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/supplier/submissions/{sid}/activities",
+    "name": "activity_list"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/supplier/submissions/{sid}/activities/{activity_id}",
+    "name": "activity_del"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/supplier/submissions/{sid}/validate",
+    "name": "validate_sub"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/supplier/submissions/{sid}/submit",
+    "name": "submit"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/supplier/submissions/{sid}/spreadsheet-uploads",
+    "name": "sheet_upload"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/supplier/submissions/{sid}/spreadsheet-uploads/{uid}",
+    "name": "sheet_get"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/supplier/submissions/{sid}/spreadsheet-uploads/{uid}/ai-map",
+    "name": "ai_map"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/supplier/submissions/{sid}/spreadsheet-uploads/{uid}/mapping",
+    "name": "mapping_put"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/supplier/submissions/{sid}/spreadsheet-uploads/{uid}/validate",
+    "name": "mapping_validate"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/supplier/submissions/{sid}/spreadsheet-uploads/{uid}/import",
+    "name": "mapping_import"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/supplier/submissions/{sid}/evidence",
+    "name": "evidence_upload"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/supplier/submissions/{sid}/evidence",
+    "name": "evidence_list"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/supplier/submissions/{sid}/evidence/{eid}",
+    "name": "evidence_delete"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/supplier/submissions/{sid}/clarifications",
+    "name": "clarification_list"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/supplier/submissions/{sid}/clarifications/{cid}/respond",
+    "name": "clarification_respond"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/supplier/submissions/{sid}/reduction-suggestions",
+    "name": "reduction"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/supplier/submissions/{sid}/reduction-suggestions",
+    "name": "reduction_get"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/submissions",
+    "name": "manufacturer_subs"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/submissions/{sid}",
+    "name": "manufacturer_sub"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/submissions/{sid}/validation",
+    "name": "manufacturer_validation"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/submissions/{sid}/evidence",
+    "name": "manufacturer_evidence"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/manufacturer/calculations",
+    "name": "calculate"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/calculations",
+    "name": "calculations"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/calculations/{cid}",
+    "name": "calculation_get"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/calculations/{cid}/receipt",
+    "name": "receipt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/dashboard/summary",
+    "name": "dashboard"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/reports/emissions",
+    "name": "emissions_report"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/manufacturer/reports/suppliers",
+    "name": "supplier_report"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auditor/assignments",
+    "name": "auditor_assignments"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auditor/submissions",
+    "name": "auditor_submissions"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auditor/submissions/{sid}",
+    "name": "auditor_sub"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auditor/submissions/{sid}/evidence",
+    "name": "auditor_evidence"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/auditor/submissions/{sid}/ai/report-quality",
+    "name": "quality"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/auditor/submissions/{sid}/ai/evidence-review",
+    "name": "evidence_review"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auditor/submissions/{sid}/ai-assessments",
+    "name": "assessments"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/auditor/submissions/{sid}/comments",
+    "name": "comment"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auditor/submissions/{sid}/comments",
+    "name": "comments"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/auditor/submissions/{sid}/clarifications",
+    "name": "clarification"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/auditor/clarifications/{cid}",
+    "name": "clarification_patch"
+  }
+]

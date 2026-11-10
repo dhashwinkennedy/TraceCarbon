@@ -1,0 +1,7 @@
+test_id,feature_name,test_scenario,testing_mode,status,duration_ms,details
+"AI-CONN-01","OpenRouter Connection","Model listing & live test completion","live_api","PASSED",2005,"Verified model 'nvidia/nemotron-3-ultra-550b-a55b:free' listed and returned valid JSON with finish_reason 'stop'."
+"AI-MAP-01","Spreadsheet Auto-Mapping","Live OpenRouter mapping & full import lifecycle","live_api","PASSED",11398,"All 4 activities mapped accurately with high confidence; user confirmed and imported 2 rows aggregating with sum."
+"AI-MAP-02","Spreadsheet Auto-Mapping","Prompt injection & hostile header defense","live_api","PASSED",22777,"Model ignored adversarial injection instruction in column header; mapped genuine column correctly."
+"AI-SEC-01","Role RBAC Security","Cross-role endpoint permission boundaries","security","PASSED",3054,"All 4 AI features strictly enforce supplier vs auditor vs manufacturer role boundaries (403 Forbidden)."
+"AI-FAIL-01","Provider Failure Handling","Mocked 401, 429, 500, timeout, and malformed JSON","mocked","PASSED",1217,"Backend appropriately translated OpenRouter failures to 502 Bad Gateway or 504 Gateway Timeout without uncaught crashes."
+"AI-DET-01","Deterministic Calculations","Verification that emissions calculations do not call AI","audit","PASSED",1008,"Confirmed emissions arithmetic is 100% deterministic Python and never invokes OpenRouter."

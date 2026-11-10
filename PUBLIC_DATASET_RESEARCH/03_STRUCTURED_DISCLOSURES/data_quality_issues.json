@@ -1,0 +1,102 @@
+[
+  {
+    "Issue_ID": "ISSUE-01",
+    "Affected_Entity_or_Dataset": "UltraTech Cement Limited",
+    "Disclosure_Dimension": "Emissions Accounting",
+    "Issue_Description": "Gross specific CO2 (618.17 kg CO2/t) vs GCCA Net specific CO2 (556 kg CO2/t).",
+    "Root_Cause_in_Indian_Reporting": "GCCA cement protocols subtract alternative fuel emissions and calcination offsets in Net figures.",
+    "Impact_on_Scope3_Estimation": "High: Understates emissions by 10.1% if Net figure is applied naively.",
+    "Methodological_Mitigation_in_Scope3Track": "Adopt Gross GHG Intensity (618.17 kg CO2/t) as the primary conservative Scope 3 factor.",
+    "Audit_Recommendation_for_Platform": "Display transparent toggle in Scope3Track between Gross and Net clinker emission factors."
+  },
+  {
+    "Issue_ID": "ISSUE-02",
+    "Affected_Entity_or_Dataset": "Hindalco Industries Limited",
+    "Disclosure_Dimension": "Boundary Definition",
+    "Issue_Description": "Captive thermal coal plant emissions aggregated with alumina refinery process heat.",
+    "Root_Cause_in_Indian_Reporting": "Severe co-location of coal mining, bauxite refining, and smelter power generation in single industrial complexes.",
+    "Impact_on_Scope3_Estimation": "Medium: Distorts product-level carbon footprint across aluminium vs alumina vs copper.",
+    "Methodological_Mitigation_in_Scope3Track": "Utilize Hindalco's audited aluminium intensity (19.39 tCO2e/MT) rather than dividing total corporate emissions by total tonnage.",
+    "Audit_Recommendation_for_Platform": "Require product-specific life cycle boundary declarations from multi-product metals conglomerates."
+  },
+  {
+    "Issue_ID": "ISSUE-03",
+    "Affected_Entity_or_Dataset": "Tata Chemicals Limited",
+    "Disclosure_Dimension": "Biogenic Carbon",
+    "Issue_Description": "Biogenic carbon from biomass co-firing reported in footnotes (38,167 tCO2e) outside Scope 1.",
+    "Root_Cause_in_Indian_Reporting": "SEBI BRSR format requests biogenic emissions as a separate memo item under Principle 6.",
+    "Impact_on_Scope3_Estimation": "Low: Omitting biogenic carbon causes marginal discrepancies in gross energy balance.",
+    "Methodological_Mitigation_in_Scope3Track": "Classify biogenic carbon in separate metadata field; follow GHG Protocol Corporate Standard treating biogenic CO2 as memo item.",
+    "Audit_Recommendation_for_Platform": "Implement explicit biogenic carbon badge in evidence inspection view."
+  },
+  {
+    "Issue_ID": "ISSUE-04",
+    "Affected_Entity_or_Dataset": "JK Paper Limited",
+    "Disclosure_Dimension": "Renewable Fuel Dominance",
+    "Issue_Description": "61.9% of thermal energy derived from black liquor and biomass; Scope 1 fossil emissions appear abnormally low.",
+    "Root_Cause_in_Indian_Reporting": "Integrated Kraft pulping cycles burn black liquor recovery solids for co-generation.",
+    "Impact_on_Scope3_Estimation": "High: Standard spend-based EEIO factors severely overestimate paper emissions by assuming coal-heavy grid.",
+    "Methodological_Mitigation_in_Scope3Track": "Mandate supplier-specific activity calculations for integrated paper mills to reward biogenic/renewable thermal generation.",
+    "Audit_Recommendation_for_Platform": "Flag paper purchases with substantial biomass share for supplier-specific method rather than spend-based fallback."
+  },
+  {
+    "Issue_ID": "ISSUE-05",
+    "Affected_Entity_or_Dataset": "The Supreme Industries Limited",
+    "Disclosure_Dimension": "Scope 3 Embodied Resins",
+    "Issue_Description": "Supreme reports low Scope 1+2 converting intensity (0.386 t/MT) because raw polymer resins are purchased externally.",
+    "Root_Cause_in_Indian_Reporting": "Plastic converters perform mechanical shaping and extrusion; resin synthesis emissions reside in resin supplier upstream Scope 1.",
+    "Impact_on_Scope3_Estimation": "High: If manufacturer treats Supreme's plastic as raw material, upstream polymer resin (2.0-2.8 tCO2/t) must be accounted.",
+    "Methodological_Mitigation_in_Scope3Track": "Scope3Track must account for Scope 3 upstream Category 1 cradle-to-gate resin footprint in product factor mode.",
+    "Audit_Recommendation_for_Platform": "Enable cradle-to-gate vs gate-to-gate configuration switches for converted plastic components."
+  },
+  {
+    "Issue_ID": "ISSUE-06",
+    "Affected_Entity_or_Dataset": "BHEL",
+    "Disclosure_Dimension": "Capital Goods Functional Unit",
+    "Issue_Description": "Physical output reported in Megawatts (MW) electrical rating rather than uniform metric tonnes.",
+    "Root_Cause_in_Indian_Reporting": "Capital machinery has extreme product heterogeneity (boilers, turbines, transformers, pumps).",
+    "Impact_on_Scope3_Estimation": "High: Prevents simple mass-based activity emission factor application.",
+    "Methodological_Mitigation_in_Scope3Track": "Support multi-modal activity units: Units (per machine), MW capacity, and monetary spend-based fallback.",
+    "Audit_Recommendation_for_Platform": "Establish machinery equipment weight profiles in Category 2 calculation engine."
+  },
+  {
+    "Issue_ID": "ISSUE-07",
+    "Affected_Entity_or_Dataset": "Central Electricity Authority",
+    "Disclosure_Dimension": "Temporal Lag in Factors",
+    "Issue_Description": "CEA publishes official national grid emission factor reports with a 9 to 12 month lag (e.g. v20 released Dec 2024 for FY24).",
+    "Root_Cause_in_Indian_Reporting": "Consolidation of hourly generation and auxiliary consumption data across all state and central utilities takes 9 months.",
+    "Impact_on_Scope3_Estimation": "Medium: Reporting year emissions must temporarily utilize previous year factor or provisional updates.",
+    "Methodological_Mitigation_in_Scope3Track": "Maintain versioned grid factor tables (v19 for FY23, v20 for FY24) with automated vintage matching based on reporting month.",
+    "Audit_Recommendation_for_Platform": "Store grid factor vintage metadata inside every calculation receipt."
+  },
+  {
+    "Issue_ID": "ISSUE-08",
+    "Affected_Entity_or_Dataset": "Cornerstone EEIO",
+    "Disclosure_Dimension": "Currency & Deflator Adjustments",
+    "Issue_Description": "Cornerstone factors are denominated in 2024 USD; converting to INR with arbitrary deflators induces unverified distortion.",
+    "Root_Cause_in_Indian_Reporting": "Exchange rate fluctuations between INR and USD distort real physical emissions.",
+    "Impact_on_Scope3_Estimation": "Medium: An INR depreciation appears as artificial decarbonization in spend-based Scope 3 estimations.",
+    "Methodological_Mitigation_in_Scope3Track": "Preserve original published USD factors; apply direct RBI annual average exchange rate without speculative price-deflator adjustments.",
+    "Audit_Recommendation_for_Platform": "Log currency conversion rate and base year in every spend-based calculation receipt."
+  },
+  {
+    "Issue_ID": "ISSUE-09",
+    "Affected_Entity_or_Dataset": "Asahi India Glass & Supreme",
+    "Disclosure_Dimension": "Absence of Third-Party Assurance",
+    "Issue_Description": "Both entities explicitly state 'No independent assessment/assurance has been carried out by an external agency' in their FY24 BRSRs.",
+    "Root_Cause_in_Indian_Reporting": "SEBI permitted phased adoption of reasonable assurance for companies outside top 150 market cap in FY24.",
+    "Impact_on_Scope3_Estimation": "Medium: Increases uncertainty of self-reported energy and emissions figures.",
+    "Methodological_Mitigation_in_Scope3Track": "Reflect lower assurance score in candidate selection rubric; flag supplier as Self-Certified in Scope3Track UI.",
+    "Audit_Recommendation_for_Platform": "Encourage suppliers to upload statutory auditor verification certificates."
+  },
+  {
+    "Issue_ID": "ISSUE-10",
+    "Affected_Entity_or_Dataset": "All 10 Companies",
+    "Disclosure_Dimension": "Intensity Trend Discrepancy",
+    "Issue_Description": "5 out of 10 companies saw specific emission intensity INCREASE or remain flat YoY, contrary to general decarbonization claims.",
+    "Root_Cause_in_Indian_Reporting": "Industrial ramp-ups, trial runs (e.g. Hindalco potlines), and float process emission additions increased intensities.",
+    "Impact_on_Scope3_Estimation": "High: Demonstrates that corporate emissions do not monotonically decline.",
+    "Methodological_Mitigation_in_Scope3Track": "Recalculate exact YoY variances using published numbers; eliminate claims of universal emissions reductions.",
+    "Audit_Recommendation_for_Platform": "Ensure Scope3Track reflects authentic empirical trends without artificial smoothing."
+  }
+]

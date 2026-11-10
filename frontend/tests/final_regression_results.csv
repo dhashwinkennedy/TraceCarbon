@@ -1,0 +1,23 @@
+test_id,test_name,role,status,duration_ms,screenshot,details
+"TC-FINAL-01","Multi-Role Evidence Count Lifecycle & Persistence","multi-role","PASSED",26185,"05_evidence_count_after_deletion.png","Verified 0 -> 1 -> 2 count update, reload persistence across Supplier/Manufacturer/Auditor, and decrement to 1 upon deletion. Console errors: 0"
+"TC-FINAL-02","Category 2 Capital Goods Demo Workflow & Dashboard Aggregation","manufacturer","PASSED",6503,"07_category2_dashboard_result.png","Verified Category 2 machinery product, 2026-05 purchase ledger, 25.00 t CO2e receipt, and isolated dashboard aggregation without bleeding into Category 1. Console errors: 0"
+"TC-FINAL-03","Double-Counting Prevention & Methodology Switching","manufacturer","PASSED",2792,"08_double_counting_prevention.png","Verified single active calculation per purchase record in inventory. Verified historical receipts preserved. Console errors: 0"
+"TC-FINAL-04","Purchase Excel Ingestion Workflow","manufacturer","PASSED",6042,"09_purchase_excel_confirmation.png","Template downloaded, dynamic file uploaded, SHA-256 pre-ingestion summary verified, and ledger successfully updated with 358 tonnes. Console errors: 0"
+"TC-FINAL-05","Auditor AI Review & Clarification Loop","auditor","PASSED",46254,"11_clarification_lifecycle.png","Executed live PyMuPDF OCR + OpenRouter AI evidence review, OpenRouter report quality scan, logged audit findings, and completed supplier clarification loop. Console errors: 0"
+"TC-FINAL-06","Responsive Viewports & Console Hygiene","manufacturer","PASSED",4221,"13_responsive_mobile_390.png","Verified responsive layout at 1440px and 390px. Console errors: 0, Network failures: 0"
+"TC-FINAL-01","Multi-Role Evidence Count Lifecycle & Persistence","multi-role","PASSED",24205,"05_evidence_count_after_deletion.png","Verified 0 -> 1 -> 2 count update, reload persistence across Supplier/Manufacturer/Auditor, and decrement to 1 upon deletion. Console errors: 0"
+"TC-FINAL-02","Category 2 Capital Goods Demo Workflow & Dashboard Aggregation","manufacturer","PASSED",5901,"07_category2_dashboard_result.png","Verified Category 2 machinery product, 2026-05 purchase ledger, 25.00 t CO2e receipt, and isolated dashboard aggregation without bleeding into Category 1. Console errors: 0"
+"TC-FINAL-03","Double-Counting Prevention & Methodology Switching","manufacturer","PASSED",2108,"08_double_counting_prevention.png","Verified single active calculation per purchase record in inventory. Verified historical receipts preserved. Console errors: 0"
+"TC-FINAL-04","Purchase Excel Ingestion Workflow","manufacturer","PASSED",4571,"09_purchase_excel_confirmation.png","Template downloaded, dynamic file uploaded, SHA-256 pre-ingestion summary verified, and ledger successfully updated with 314 tonnes. Console errors: 0"
+"TC-FINAL-05","Auditor AI Review & Clarification Loop","auditor","FAILED",76117,"11_clarification_lifecycle.png","Failed with error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: locator('text=Evidence Parity Rating')
+Expected: visible
+Timeout: 60000ms
+Error: element(s) not found
+
+Call log:
+[2m  - Expect ""toBeVisible"" locator('text=Evidence Parity Rating') with timeout 60000ms[22m
+[2m  - waiting for locator('text=Evidence Parity Rating')[22m
+"
+"TC-FINAL-06","Responsive Viewports & Console Hygiene","manufacturer","PASSED",4116,"13_responsive_mobile_390.png","Verified responsive layout at 1440px and 390px. Console errors: 0, Network failures: 0"
