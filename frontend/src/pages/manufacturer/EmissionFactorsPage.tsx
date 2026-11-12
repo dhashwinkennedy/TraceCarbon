@@ -111,13 +111,17 @@ export const EmissionFactorsPage: React.FC = () => {
                   <th className="px-6 py-3.5 font-semibold">Methodology</th>
                   <th className="px-6 py-3.5 font-semibold">Factor Value</th>
                   <th className="px-6 py-3.5 font-semibold">Denominator Unit</th>
-                  <th className="px-6 py-3.5 font-semibold">Applicable Activity / Currency</th>
-                  <th className="px-6 py-3.5 font-semibold">Source</th>
+                  <th className="px-6 py-3.5 font-semibold">Scope / FY / Sector</th>
+                  <th className="px-6 py-3.5 font-semibold">Source & Classification</th>
                   <th className="px-6 py-3.5 font-semibold">Version</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {filteredFactors.map((f) => (
+                {filteredFactors.map((f) => {
+                  const isSynth = Boolean(f.demo) || f.source_name === 'SYNTHETIC_DEMO';
+                  const isDerived = Boolean(f.is_project_derived) || f.data_classification === 'PROJECT_DERIVED_IPCC_BASED';
+                  const isOfficial = !isSynth && !isDerived && (f.id.startsWith('FACT-CEA-') || f.id.startsWith('FACT-CEDA-'));
+                  return (
                   <tr key={f.id} className="hover:bg-slate-50/50">
                     <td className="px-6 py-4 font-semibold text-slate-900">
                       <div>
@@ -131,20 +135,49 @@ export const EmissionFactorsPage: React.FC = () => {
                       <StatusBadge status={f.factor_type} />
                     </td>
                     <td className="px-6 py-4 font-bold text-slate-800 font-mono">
-                      {f.factor_value}
+                      <div>{f.factor_value_usd ? `${f.factor_value_usd} kg/USD` : f.factor_value}</div>
+                      {f.factor_value_usd && (
+                        <span className="text-[10px] text-slate-400 font-normal block">
+                          {f.factor_value} kg/INR @ {f.fx_rate}
+                        </span>
+                      )}
                     </td>
                     <td className="px-6 py-4 font-mono text-xs">{f.denominator_unit}</td>
                     <td className="px-6 py-4 font-mono text-xs text-slate-700">
-                      {f.applicable_activity || f.currency || '—'}
+                      <div>{f.applicable_activity || (f.sector_code ? `NAICS ${f.sector_code}` : f.currency || '—')}</div>
+                      {f.financial_year && (
+                        <span className="text-[10px] text-slate-400 block">{f.financial_year}</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-xs text-slate-500">
-                      {f.source_name || 'Standard Reference'}
+                      <div className="mb-1">
+                        {isOfficial && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            Official Public Factor
+                          </span>
+                        )}
+                        {isDerived && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                            Project-Derived (IPCC-Based)
+                          </span>
+                        )}
+                        {isSynth && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                            Synthetic Demo Factor
+                          </span>
+                        )}
+                      </div>
+                      <span>{f.source_name || 'Standard Reference'}</span>
+                      {f.disclosure && (
+                        <span className="block text-[10px] text-amber-700 mt-0.5">{f.disclosure}</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-xs text-slate-500">
-                      v{f.version || 1} {f.demo && <span className="ml-1 text-[10px] text-amber-600 bg-amber-50 px-1 py-0.5 rounded font-mono">demo</span>}
+                      {f.factor_version ? `v${f.factor_version}` : `v${f.version || 1}`}
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>

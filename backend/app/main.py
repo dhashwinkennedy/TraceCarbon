@@ -39,6 +39,7 @@ class Settings(BaseSettings):
     jwt_secret_key: str = "development-only-change-me"; jwt_algorithm: str = "HS256"; access_token_expire_minutes: int = 60
     openrouter_api_key: str = ""; openrouter_base_url: str = "https://openrouter.ai/api/v1"; openrouter_model: str = "nvidia/nemotron-3-ultra-550b-a55b"; openrouter_timeout: int = 30
     cors_origins: str = "http://localhost:5173"; upload_dir: str = "uploads"; max_upload_size_mb: int = 10
+    demo_mode: bool = True
 settings = Settings()
 pwd = CryptContext(schemes=["argon2"], deprecated="auto")
 
@@ -72,9 +73,18 @@ UNIT_CONVERSIONS = {
     ("kg", "kg"): 1.0,
     ("m3", "litres"): 1000.0,
     ("litres", "m3"): 0.001,
+    ("litre", "m3"): 0.001,
+    ("m3", "litre"): 1000.0,
     ("l", "m3"): 0.001,
     ("m3", "l"): 1000.0,
     ("litres", "litres"): 1.0,
+    ("litre", "litres"): 1.0,
+    ("litres", "litre"): 1.0,
+    ("litre", "litre"): 1.0,
+    ("l", "litres"): 1.0,
+    ("litres", "l"): 1.0,
+    ("l", "litre"): 1.0,
+    ("litre", "l"): 1.0,
     ("m3", "m3"): 1.0,
 }
 def convert_unit(value: float, from_unit: str, to_unit: str) -> tuple[float | None, dict | None]:
@@ -181,7 +191,7 @@ def resolve_financial_year(rm: str | None) -> tuple[str, str]:
     """Returns (full_financial_year, short_tag) like ('FY2022-23', 'FY22')."""
     if not rm:
         return "FY2022-23", "FY22"
-    rm = str(rm).strip()
+    rm = str(rm).strip().replace("\u2013", "-").replace("\u2014", "-")
     if rm.startswith("FY") and len(rm) >= 9:
         return rm[:9], f"FY{rm[4:6]}"
     parts = rm.split("-")
@@ -192,6 +202,208 @@ def resolve_financial_year(rm: str | None) -> tuple[str, str]:
         else:
             return f"FY{y-1}-{y%100:02d}", f"FY{str(y-1)[2:]}"
     return "FY2022-23", "FY22"
+
+
+def resolve_purchase_sector(p: dict) -> str | None:
+    """Resolve NAICS sector code from purchase record or commodity mapping without remapping valid sectors."""
+    return (
+        p.get("sector_code")
+        or COMMODITY_TO_NAICS.get(p.get("product_id"))
+        or COMMODITY_TO_NAICS.get(p.get("product_name"))
+        or COMMODITY_TO_NAICS.get(p.get("supplier_id"))
+    )
+
+
+def _lookup_spend_factor(sec: str | None, fy: str, tag: str) -> dict | None:
+    """Look up official Open CEDA factor first; fall back to explicitly enabled SYNTHETIC_DEMO only in demo mode."""
+    if not sec:
+        return None
+    ef_col = db()["emission_factors"]
+    factor = (
+        ef_col.find_one({
+            "factor_type": "spend_based",
+            "sector_code": sec,
+            "financial_year": fy,
+            "is_active": {"$ne": False},
+            "demo": {"$ne": True},
+        })
+        or ef_col.find_one({"id": f"FACT-CEDA-{sec}-{tag}", "is_active": {"$ne": False}})
+    )
+    if not factor and settings.demo_mode:
+        factor = ef_col.find_one({
+            "factor_type": "spend_based",
+            "sector_code": sec,
+            "financial_year": fy,
+            "source_name": "SYNTHETIC_DEMO",
+            "is_active": True,
+        })
+    return factor
+
+
+def _is_synthetic_spend_factor(f: dict) -> bool:
+    src = str(f.get("source_name") or "")
+    return src == "SYNTHETIC_DEMO" or (bool(f.get("demo")) and "ceda" not in src.lower())
+
+
+def _compute_spend_breakdown(p: dict, f: dict, sec: str | None) -> tuple[dict, dict, float, str]:
+    """Compute Spend-Based INR -> USD -> kg CO2e emission figures with transparent official vs demo provenance."""
+    spend_inr = float(p.get("purchase_expenditure", 0.0))
+    fx = float(f.get("fx_rate") or 1.0)
+    spend_usd = spend_inr / fx
+    f_usd = float(f.get("factor_value_usd") if f.get("factor_value_usd") is not None else float(f["factor_value"]) * fx)
+    result = round(spend_usd * f_usd, 2)
+    is_synth = _is_synthetic_spend_factor(f)
+    source_name = f.get("source_name") or ("SYNTHETIC_DEMO" if is_synth else "Open CEDA")
+    version = f.get("version", 1)
+    disclosure = f.get("disclosure") or (
+        "Synthetic demonstration factor — not an official Open CEDA factor"
+        if is_synth
+        else f"{source_name} ({f.get('proxy_year') or f.get('financial_year')})"
+    )
+    attribution = None if is_synth else f.get("attribution", "CEDA by Watershed")
+    license_str = "Synthetic Demonstration Data" if is_synth else f.get("license", "CC BY-SA 4.0")
+    price_basis = f.get("price_basis", "Producer Price")
+    desc = disclosure if is_synth else f"{source_name} EEIO sector factor ({f.get('proxy_year')})"
+
+    component = {
+        "sector_code": f.get("sector_code", sec),
+        "sector_name": f.get("sector_name"),
+        "factor_id": f["id"],
+        "factor_version": version,
+        "source_name": source_name,
+        "is_synthetic": is_synth,
+        "disclosure": disclosure,
+        "spend_inr": spend_inr,
+        "fx_rate": fx,
+        "spend_usd": round(spend_usd, 2),
+        "factor_value_usd": f_usd,
+        "emissions_kgco2e": result,
+    }
+    metadata = {
+        "source_name": source_name,
+        "factor_version": version,
+        "attribution": attribution,
+        "license": license_str,
+        "price_basis": price_basis,
+        "proxy_year": f.get("proxy_year"),
+        "fx_rate": fx,
+        "factor_value_usd": f_usd,
+        "sector_code": f.get("sector_code", sec),
+        "sector_name": f.get("sector_name"),
+        "is_synthetic": is_synth,
+        "disclosure": disclosure,
+    }
+    return component, metadata, result, desc
+
+
+def _lookup_activity_factors(fy: str, tag: str) -> tuple[dict | None, dict | None]:
+    """Look up CEA grid factor for the target FY and project-derived IPCC stationary diesel factor."""
+    ef_col = db()["emission_factors"]
+    cea = (
+        ef_col.find_one({"id": f"FACT-CEA-GRID-{tag}", "is_active": {"$ne": False}})
+        or ef_col.find_one({
+            "factor_type": "activity_based",
+            "applicable_activity": "electricity",
+            "financial_year": fy,
+            "is_active": {"$ne": False},
+            "demo": {"$ne": True},
+        })
+    )
+    ipcc = (
+        ef_col.find_one({"id": "FACT-IPCC-DIESEL", "is_active": {"$ne": False}})
+        or ef_col.find_one({
+            "factor_type": "activity_based",
+            "applicable_activity": "diesel",
+            "financial_year": {"$in": ["ALL", fy]},
+            "is_active": {"$ne": False},
+            "demo": {"$ne": True},
+        })
+    )
+    return cea, ipcc
+
+
+def _normalize_activity_value(act: dict, target_unit: str) -> tuple[float, str]:
+    val = float(act.get("value", 0.0))
+    unit = str(act.get("unit") or target_unit)
+    if unit.lower() == target_unit.lower():
+        return val, target_unit
+    conv, _ = convert_unit(val, unit, target_unit)
+    if conv is not None:
+        return conv, target_unit
+    return val, unit
+
+
+def _compute_activity_breakdown(
+    elec_act: dict,
+    diesel_act: dict,
+    conv_qty: float,
+    annual_prod: float,
+    alpha: float,
+    cea: dict,
+    ipcc: dict,
+    allocation_basis: str = "physical_production_mass",
+) -> tuple[list[dict], dict, float, float, float, float]:
+    """Compute Activity-Based facility energy emissions and physical production allocation."""
+    elec_val, elec_unit = _normalize_activity_value(elec_act, str(cea.get("denominator_unit") or "kWh"))
+    diesel_val, diesel_unit = _normalize_activity_value(diesel_act, str(ipcc.get("denominator_unit") or "litres"))
+    em_elec = elec_val * float(cea["factor_value"])
+    em_diesel = diesel_val * float(ipcc["factor_value"])
+    fac_total = em_elec + em_diesel
+    alloc_em = round(fac_total * alpha, 2)
+
+    diesel_disclosure = ipcc.get("disclosure") or (
+        "Project-derived IPCC-based stationary combustion factor using documented project assumptions — not a universal directly published IPCC factor."
+    )
+    components = [
+        {
+            "activity_id": "electricity",
+            "value": elec_val,
+            "unit": elec_unit,
+            "factor_id": cea["id"],
+            "factor_value": cea["factor_value"],
+            "source_name": cea.get("source_name"),
+            "emissions_kgco2e": round(em_elec, 2),
+        },
+        {
+            "activity_id": "diesel",
+            "value": diesel_val,
+            "unit": diesel_unit,
+            "factor_id": ipcc["id"],
+            "factor_value": ipcc["factor_value"],
+            "source_name": ipcc.get("source_name"),
+            "is_project_derived": ipcc.get("is_project_derived", True),
+            "disclosure": diesel_disclosure,
+            "emissions_kgco2e": round(em_diesel, 2),
+        },
+        {"activity_id": "facility_total", "emissions_kgco2e": round(fac_total, 2)},
+        {
+            "activity_id": "allocation",
+            "allocation_basis": allocation_basis,
+            "purchased_qty": conv_qty,
+            "annual_production": annual_prod,
+            "allocation_fraction": alpha,
+        },
+    ]
+    factor_metadata = {
+        "source_name": "CEA Grid Baseline & Project-Derived Stationary Diesel Factor",
+        "grid_factor": {
+            "id": cea["id"],
+            "factor_value": cea["factor_value"],
+            "version": cea.get("factor_version") or cea.get("version"),
+            "source": cea.get("source_name"),
+            "is_official_reference": True,
+        },
+        "diesel_factor": {
+            "id": ipcc["id"],
+            "factor_value": ipcc["factor_value"],
+            "source": ipcc.get("source_name"),
+            "calculation_basis": ipcc.get("calculation_basis"),
+            "is_project_derived": True,
+            "disclosure": diesel_disclosure,
+        },
+        "description": "Supplier-specific energy activity allocation estimate — synthetic demonstration supplier activity data",
+    }
+    return components, factor_metadata, em_elec, em_diesel, fac_total, alloc_em
 
 app=FastAPI(title="Scope3Track API", version="1.0.0")
 app.add_middleware(CORSMiddleware,allow_origins=[x.strip() for x in settings.cors_origins.split(",")],allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",allow_credentials=True,allow_methods=["*"],allow_headers=["*"])
@@ -1188,36 +1400,32 @@ def evaluate_purchase_method_options(p: dict) -> dict:
         }
 
     # 2. Spend-Based
-    sec = COMMODITY_TO_NAICS.get(p.get("product_id")) or COMMODITY_TO_NAICS.get(p.get("product_name")) or COMMODITY_TO_NAICS.get(p.get("supplier_id"))
-    spend_factor = db()["emission_factors"].find_one({
-        "factor_type": "spend_based",
-        "sector_code": sec,
-        "financial_year": fy
-    }) or db()["emission_factors"].find_one({"id": f"FACT-CEDA-{sec}-{tag}"})
+    sec = resolve_purchase_sector(p)
+    spend_factor = _lookup_spend_factor(sec, fy, tag)
 
     if spend_factor:
-        spend_inr = float(p.get("purchase_expenditure", 0.0))
-        fx = float(spend_factor.get("fx_rate", 1.0))
-        spend_usd = spend_inr / fx
-        f_usd = float(spend_factor.get("factor_value_usd", spend_factor["factor_value"] * fx))
-        spend_em = round(spend_usd * f_usd, 2)
+        spend_comp, spend_meta, spend_em, spend_desc = _compute_spend_breakdown(p, spend_factor, sec)
         options["spend_based"] = {
             "eligible": True,
             "factor_id": spend_factor["id"],
-            "sector_code": spend_factor.get("sector_code"),
-            "sector_name": spend_factor.get("sector_name"),
+            "factor_version": spend_meta["factor_version"],
+            "source_name": spend_meta["source_name"],
+            "is_synthetic": spend_meta["is_synthetic"],
+            "disclosure": spend_meta["disclosure"],
+            "sector_code": spend_comp["sector_code"],
+            "sector_name": spend_comp["sector_name"],
             "financial_year": fy,
             "proxy_year": spend_factor.get("proxy_year"),
-            "fx_rate": fx,
-            "spend_inr": spend_inr,
-            "spend_usd": round(spend_usd, 2),
-            "factor_value_usd": f_usd,
-            "price_basis": spend_factor.get("price_basis", "Producer Price"),
-            "attribution": spend_factor.get("attribution", "CEDA by Watershed"),
-            "license": spend_factor.get("license", "CC BY-SA 4.0"),
+            "fx_rate": spend_comp["fx_rate"],
+            "spend_inr": spend_comp["spend_inr"],
+            "spend_usd": spend_comp["spend_usd"],
+            "factor_value_usd": spend_comp["factor_value_usd"],
+            "price_basis": spend_meta["price_basis"],
+            "attribution": spend_meta["attribution"],
+            "license": spend_meta["license"],
             "precomputed_emissions_kgco2e": spend_em,
             "precomputed_emissions_tco2e": round(spend_em / 1000.0, 4),
-            "description": f"Open CEDA EEIO sector factor ({spend_factor.get('proxy_year')})"
+            "description": spend_desc
         }
     else:
         options["spend_based"] = {
@@ -1294,16 +1502,7 @@ def evaluate_purchase_method_options(p: dict) -> dict:
                                 "reason": f"Purchase quantity ({conv_qty} {prod_act.get('unit')}) exceeds supplier annual production ({annual_prod} {prod_act.get('unit')}), yielding invalid allocation fraction {alpha:.4f} (> 1.0)."
                             }
                         else:
-                            cea = db()["emission_factors"].find_one({
-                                "factor_type": "activity_based",
-                                "applicable_activity": "electricity",
-                                "$or": [{"financial_year": fy}, {"id": f"FACT-CEA-GRID-{tag}"}]
-                            }) or db()["emission_factors"].find_one({"id": f"FACT-CEA-GRID-{tag}"})
-                            ipcc = db()["emission_factors"].find_one({
-                                "factor_type": "activity_based",
-                                "applicable_activity": "diesel",
-                                "id": "FACT-IPCC-DIESEL"
-                            }) or db()["emission_factors"].find_one({"id": "FACT-IPCC-DIESEL"})
+                            cea, ipcc = _lookup_activity_factors(fy, tag)
 
                             if not cea or not ipcc:
                                 options["activity_based"] = {
@@ -1312,10 +1511,9 @@ def evaluate_purchase_method_options(p: dict) -> dict:
                                     "reason": "CEA grid factor or IPCC diesel factor not found in emission factor catalog."
                                 }
                             else:
-                                em_elec = float(elec_act["value"]) * float(cea["factor_value"])
-                                em_diesel = float(diesel_act["value"]) * float(ipcc["factor_value"])
-                                fac_total = em_elec + em_diesel
-                                alloc_em = round(fac_total * alpha, 2)
+                                act_comps, act_meta, em_elec, em_diesel, fac_total, alloc_em = _compute_activity_breakdown(
+                                    elec_act, diesel_act, conv_qty, annual_prod, alpha, cea, ipcc
+                                )
                                 options["activity_based"] = {
                                     "eligible": True,
                                     "financial_year": fy,
@@ -1326,12 +1524,20 @@ def evaluate_purchase_method_options(p: dict) -> dict:
                                     "production_unit": prod_act.get("unit"),
                                     "allocation_fraction": alpha,
                                     "allocation_fraction_pct": round(alpha * 100.0, 4),
+                                    "electricity_emissions_kgco2e": round(em_elec, 2),
+                                    "diesel_emissions_kgco2e": round(em_diesel, 2),
                                     "facility_emissions_kgco2e": round(fac_total, 2),
                                     "precomputed_emissions_kgco2e": alloc_em,
                                     "precomputed_emissions_tco2e": round(alloc_em / 1000.0, 4),
+                                    "grid_factor_id": cea["id"],
                                     "grid_factor_value": cea["factor_value"],
+                                    "grid_factor_source": cea.get("source_name"),
+                                    "diesel_factor_id": ipcc["id"],
                                     "diesel_factor_value": ipcc["factor_value"],
-                                    "description": "Supplier-specific energy activity allocation estimate — synthetic demonstration data"
+                                    "diesel_factor_source": ipcc.get("source_name"),
+                                    "diesel_is_project_derived": True,
+                                    "diesel_disclosure": act_meta["diesel_factor"]["disclosure"],
+                                    "description": "Supplier-specific energy activity allocation estimate — synthetic demonstration supplier activity data"
                                 }
 
     return {
@@ -1408,13 +1614,9 @@ def calculate(x:CalculationIn,u=Depends(role("manufacturer"))):
         }
 
     elif x.method == "spend_based":
-        sec = COMMODITY_TO_NAICS.get(p.get("product_id")) or COMMODITY_TO_NAICS.get(p.get("product_name")) or COMMODITY_TO_NAICS.get(p.get("supplier_id"))
+        sec = resolve_purchase_sector(p)
         if not f_id:
-            f = db()["emission_factors"].find_one({
-                "factor_type": "spend_based",
-                "sector_code": sec,
-                "financial_year": fy
-            }) or db()["emission_factors"].find_one({"id": f"FACT-CEDA-{sec}-{tag}"})
+            f = _lookup_spend_factor(sec, fy, tag)
             if not f:
                 raise HTTPException(422, f"No Open CEDA factor found for sector {sec} in {fy}")
             f_id = f["id"]
@@ -1422,31 +1624,12 @@ def calculate(x:CalculationIn,u=Depends(role("manufacturer"))):
             f = find("emission_factors", f_id)
             if f.get("factor_type") != "spend_based":
                 raise HTTPException(422, "Selected method does not match factor type")
+            if _is_synthetic_spend_factor(f) and not settings.demo_mode:
+                raise HTTPException(422, "Synthetic demonstration factor is not allowed outside demo mode")
 
-        spend_inr = float(p["purchase_expenditure"])
-        fx = float(f.get("fx_rate", 1.0))
-        spend_usd = spend_inr / fx
-        f_usd = float(f.get("factor_value_usd", f["factor_value"] * fx))
-        result = round(spend_usd * f_usd, 2)
-        formula = "(purchase_expenditure_inr / embedded_fx) × ceda_factor_usd"
-        components.append({
-            "sector_code": f.get("sector_code", sec),
-            "sector_name": f.get("sector_name"),
-            "spend_inr": spend_inr,
-            "fx_rate": fx,
-            "spend_usd": round(spend_usd, 2),
-            "factor_value_usd": f_usd,
-            "emissions_kgco2e": result
-        })
-        factor_metadata = {
-            "source_name": f.get("source_name", "Open CEDA"),
-            "attribution": "CEDA by Watershed",
-            "license": "CC BY-SA 4.0",
-            "price_basis": f.get("price_basis", "Producer Price"),
-            "proxy_year": f.get("proxy_year"),
-            "fx_rate": fx,
-            "factor_value_usd": f_usd
-        }
+        spend_comp, factor_metadata, result, _ = _compute_spend_breakdown(p, f, sec)
+        formula = "(purchase_expenditure_inr / embedded_fx) × sector_emission_factor_usd"
+        components.append(spend_comp)
 
     elif x.method == "activity_based":
         if p["id"] == "PO-2023-009":
@@ -1497,40 +1680,23 @@ def calculate(x:CalculationIn,u=Depends(role("manufacturer"))):
             if alpha > 1.0:
                 raise HTTPException(422, f"Purchase quantity ({conv_qty} {prod_act['unit']}) exceeds supplier annual production ({annual_prod} {prod_act['unit']}), yielding invalid allocation fraction {alpha:.4f} (> 1.0)")
 
-        cea = db()["emission_factors"].find_one({
-            "factor_type": "activity_based",
-            "applicable_activity": "electricity",
-            "$or": [{"financial_year": fy}, {"id": f"FACT-CEA-GRID-{tag}"}]
-        }) or db()["emission_factors"].find_one({"id": f"FACT-CEA-GRID-{tag}"})
-
-        ipcc = db()["emission_factors"].find_one({
-            "factor_type": "activity_based",
-            "applicable_activity": "diesel",
-            "id": "FACT-IPCC-DIESEL"
-        }) or db()["emission_factors"].find_one({"id": "FACT-IPCC-DIESEL"})
+        cea, ipcc = _lookup_activity_factors(fy, tag)
 
         if not cea or not ipcc:
             raise HTTPException(422, "Required CEA grid factor or IPCC diesel factor not found")
 
-        em_elec = float(elec_act["value"]) * float(cea["factor_value"])
-        em_diesel = float(diesel_act["value"]) * float(ipcc["factor_value"])
-        fac_total = em_elec + em_diesel
-        result = round(fac_total * alpha, 2)
+        components, factor_metadata, _, _, _, result = _compute_activity_breakdown(
+            elec_act,
+            diesel_act,
+            conv_qty,
+            annual_prod,
+            alpha,
+            cea,
+            ipcc,
+            allocation_basis=x.allocation_basis or "physical_production_mass",
+        )
         f_id = cea["id"]
         formula = "(supplier_electricity × grid_factor + supplier_diesel × diesel_factor) × (purchased_qty / annual_production)"
-
-        components = [
-            {"activity_id": "electricity", "value": elec_act["value"], "unit": elec_act["unit"], "factor_id": cea["id"], "factor_value": cea["factor_value"], "emissions_kgco2e": round(em_elec, 2)},
-            {"activity_id": "diesel", "value": diesel_act["value"], "unit": diesel_act["unit"], "factor_id": ipcc["id"], "factor_value": ipcc["factor_value"], "emissions_kgco2e": round(em_diesel, 2)},
-            {"activity_id": "facility_total", "emissions_kgco2e": round(fac_total, 2)},
-            {"activity_id": "allocation", "allocation_basis": x.allocation_basis or "physical_production_mass", "purchased_qty": conv_qty, "annual_production": annual_prod, "allocation_fraction": alpha}
-        ]
-        factor_metadata = {
-            "source_name": "CEA / IPCC Public Emission Factors",
-            "grid_factor": {"id": cea["id"], "factor_value": cea["factor_value"], "source": cea.get("source_name")},
-            "diesel_factor": {"id": ipcc["id"], "factor_value": ipcc["factor_value"], "source": ipcc.get("source_name")},
-            "description": "Supplier-specific energy activity allocation estimate — synthetic demonstration data"
-        }
     else:
         raise HTTPException(422, f"Unsupported calculation method: {x.method}")
 

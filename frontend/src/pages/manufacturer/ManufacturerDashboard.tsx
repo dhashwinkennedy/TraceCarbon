@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { PageHeader } from '../../components/common/PageHeader';
 import { MetricCard } from '../../components/common/MetricCard';
 import { SupplierEmissionsBar } from '../../components/charts/SupplierEmissionsBar';
+import { MethodBreakdownChart } from '../../components/charts/MethodBreakdownChart';
+import { CategoryDoughnut } from '../../components/charts/CategoryDoughnut';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { ErrorState } from '../../components/common/ErrorState';
 import { manufacturerService } from '../../services/manufacturer.service';
@@ -191,6 +193,65 @@ export const ManufacturerDashboard: React.FC = () => {
             </span>
           </div>
 
+          {/* Methodology & Category Charts driven by actual calculation results */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="font-semibold text-slate-900 text-sm">Emissions by Calculation Method</h3>
+                    <p className="text-xs text-slate-500">Live active calculations across Product-Factor, Activity-Based & Spend-Based tiers</p>
+                  </div>
+                  <Link
+                    to="/manufacturer/calculations"
+                    className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+                  >
+                    Calculations
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+                <MethodBreakdownChart
+                  dataPoints={
+                    data.method_breakdown
+                      ? [
+                          { method: 'product_factor', emissions_kgco2e: data.method_breakdown.product_factor || 0 },
+                          { method: 'activity_based', emissions_kgco2e: data.method_breakdown.activity_based || 0 },
+                          { method: 'spend_based', emissions_kgco2e: data.method_breakdown.spend_based || 0 },
+                        ]
+                      : []
+                  }
+                />
+              </div>
+              <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-500 flex flex-wrap justify-between gap-2">
+                <span>Aggregated from active calculation runs</span>
+                <span className="font-mono">Official public factors + synthetic demo inputs</span>
+              </div>
+            </div>
+
+            <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="font-semibold text-slate-900 text-sm">Scope 3 Category Share</h3>
+                    <p className="text-xs text-slate-500">Purchased Goods & Services (Cat 1) vs Capital Goods (Cat 2)</p>
+                  </div>
+                  <Link
+                    to="/manufacturer/reports"
+                    className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+                  >
+                    Reports
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+                <CategoryDoughnut category1={cat1Emissions} category2={cat2Emissions} />
+              </div>
+              <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-500 flex flex-wrap justify-between gap-2">
+                <span>Calculated emissions only (demo boundary)</span>
+                <span className="font-mono">Unverified supplier demo records</span>
+              </div>
+            </div>
+          </div>
+
           {/* Supplier Breakdown Bar - Full Width */}
           <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
             <div>
@@ -240,13 +301,14 @@ export const ManufacturerDashboard: React.FC = () => {
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-xs font-semibold text-slate-700">Product-Factor (Tier 1)</span>
-                      <span className="text-[10px] uppercase font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
-                        Highest Quality
+                      <span className="text-[10px] uppercase font-bold text-amber-800 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded">
+                        Synthetic PCF
                       </span>
                     </div>
                     <div className={`text-xl font-black ${(data.method_breakdown.product_factor || 0) > 0 ? 'text-slate-900' : 'text-slate-400 font-medium'}`}>
                       {formatMethodEmissions(data.method_breakdown.product_factor)}
                     </div>
+                    <p className="text-[10px] text-slate-500 mt-1">Synthetic demonstration PCF factor • calculated emissions</p>
                   </div>
                   <div className="mt-3 pt-2.5 border-t border-slate-200/60 text-[11px] text-slate-500 flex justify-between font-mono">
                     <span>Cat 1: {formatKgCO2e(data.method_breakdown_by_category?.product_factor?.['Category 1'] ?? (data.method_breakdown.product_factor ? cat1Emissions : 0))}</span>
@@ -260,12 +322,13 @@ export const ManufacturerDashboard: React.FC = () => {
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-xs font-semibold text-slate-700">Activity-Based (Tier 2)</span>
                       <span className="text-[10px] uppercase font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded">
-                        Primary Energy
+                        CEA + Derived Diesel
                       </span>
                     </div>
                     <div className={`text-xl font-black ${(data.method_breakdown.activity_based || 0) > 0 ? 'text-slate-900' : 'text-slate-400 font-medium'}`}>
                       {formatMethodEmissions(data.method_breakdown.activity_based)}
                     </div>
+                    <p className="text-[10px] text-slate-500 mt-1">Official CEA grid + project-derived diesel factor on synthetic activity</p>
                   </div>
                   <div className="mt-3 pt-2.5 border-t border-slate-200/60 text-[11px] text-slate-500 flex justify-between font-mono">
                     <span>Cat 1: {formatKgCO2e(data.method_breakdown_by_category?.activity_based?.['Category 1'] || 0)}</span>
@@ -278,13 +341,14 @@ export const ManufacturerDashboard: React.FC = () => {
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-xs font-semibold text-slate-700">Spend-Based (Tier 3)</span>
-                      <span className="text-[10px] uppercase font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-1.5 py-0.5 rounded">
-                        EEIO Sector
+                      <span className="text-[10px] uppercase font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
+                        Official Open CEDA
                       </span>
                     </div>
                     <div className={`text-xl font-black ${(data.method_breakdown.spend_based || 0) > 0 ? 'text-slate-900' : 'text-slate-400 font-medium'}`}>
                       {formatMethodEmissions(data.method_breakdown.spend_based)}
                     </div>
+                    <p className="text-[10px] text-slate-500 mt-1">Official Open CEDA EEIO factors (or flagged synthetic demo) • calculated</p>
                   </div>
                   <div className="mt-3 pt-2.5 border-t border-slate-200/60 text-[11px] text-slate-500 flex justify-between font-mono">
                     <span>Cat 1: {formatKgCO2e(data.method_breakdown_by_category?.spend_based?.['Category 1'] || 0)}</span>

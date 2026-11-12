@@ -4,6 +4,8 @@ import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { ErrorState } from '../../components/common/ErrorState';
 import { StatusBadge } from '../../components/common/StatusBadge';
 import { CalculationReceiptModal } from './CalculationReceiptModal';
+import { MethodBreakdownChart } from '../../components/charts/MethodBreakdownChart';
+import { CategoryDoughnut } from '../../components/charts/CategoryDoughnut';
 import { manufacturerService } from '../../services/manufacturer.service';
 import { EmissionsReportRow, SupplierReportRow } from '../../types';
 import { formatKgCO2e, formatNumber, formatDate } from '../../utils/formatters';
@@ -116,17 +118,18 @@ export const ReportsPage: React.FC = () => {
         if (isSpend) {
           const spendComp = comps[0] || {};
           const fx = spendComp.fx_rate || meta.fx_rate || 78.186062;
+          const isSynthSpend = Boolean(meta.is_synthetic || spendComp.is_synthetic || meta.source_name === 'SYNTHETIC_DEMO');
           currencyFx = `INR (FX: ${fx} INR/USD)`;
           naicsSector = `${spendComp.sector_code || meta.sector_code || ''} - ${spendComp.sector_name || meta.sector_name || ''}`;
           methodDetails = `EEIO Spend Conversion: INR to USD at ${fx} rate. Price Basis: ${meta.price_basis || 'Producer Price'}`;
-          attribution = meta.attribution || 'CEDA by Watershed';
-          license = meta.license || 'CC BY-SA 4.0';
+          attribution = isSynthSpend ? 'SYNTHETIC_DEMO (Not an official Open CEDA factor)' : (meta.attribution || 'CEDA by Watershed');
+          license = isSynthSpend ? 'Synthetic Demonstration Data' : (meta.license || 'CC BY-SA 4.0');
         } else if (isAct) {
           const alloc = comps.find((c) => c.activity_id === 'allocation') || {};
           const alphaPct = alloc.allocation_fraction ? (alloc.allocation_fraction * 100).toFixed(4) : '—';
           methodDetails = `Supplier Energy Allocation: alpha=${alphaPct}%, output=${alloc.annual_production || ''}t, purchased=${alloc.purchased_qty || ''}t`;
-          attribution = 'Central Electricity Authority (CEA) / IPCC';
-          license = 'Public Baseline User Guide';
+          attribution = 'CEA National Grid Baseline + Project-Derived Stationary Diesel Factor (synthetic supplier activity)';
+          license = 'CEA Public Baseline / Project-Derived Assumptions';
         }
 
         const tco2e = (Number(r.result_value) / 1000).toFixed(4);
@@ -288,7 +291,36 @@ export const ReportsPage: React.FC = () => {
               No emissions records match the selected report criteria.
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="space-y-6">
+              {/* Calculated Analytics Charts for Filtered Records */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-50/70 p-4 rounded-xl border border-slate-200/70">
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+                    Filtered Method Distribution (Calculated Emissions)
+                  </h4>
+                  <MethodBreakdownChart
+                    dataPoints={filteredEmissions.map((r) => ({
+                      method: r.method,
+                      emissions_kgco2e: Number(r.result_value || 0),
+                    }))}
+                  />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+                    Filtered Scope 3 Category Breakdown
+                  </h4>
+                  <CategoryDoughnut
+                    category1={filteredEmissions
+                      .filter((r) => !String(r.scope3_category || '').includes('2'))
+                      .reduce((s, r) => s + Number(r.result_value || 0), 0)}
+                    category2={filteredEmissions
+                      .filter((r) => String(r.scope3_category || '').includes('2'))
+                      .reduce((s, r) => s + Number(r.result_value || 0), 0)}
+                  />
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
               <table className="w-full text-left text-sm text-slate-600">
                 <thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500 border-b border-slate-200">
                   <tr>
@@ -308,6 +340,7 @@ export const ReportsPage: React.FC = () => {
                     const meta = row.factor_metadata || {};
                     const isSpend = row.method === 'spend_based';
                     const isAct = row.method === 'activity_based';
+                    const isSynthSpend = Boolean(meta.is_synthetic || meta.source_name === 'SYNTHETIC_DEMO');
 
                     return (
                       <tr
@@ -331,20 +364,33 @@ export const ReportsPage: React.FC = () => {
                         </td>
                         <td className="px-4 py-3 text-xs">
                           {isSpend && (
-                            <div>
-                              <span className="font-semibold text-indigo-900 block">Open CEDA EEIO</span>
-                              <span className="text-[11px] text-slate-500 block">CEDA by Watershed • CC BY-SA 4.0</span>
-                            </div>
+                            isSynthSpend ? (
+                              <div>
+                                <span className="font-semibold text-amber-800 block">Synthetic Demo Factor</span>
+                                <span className="text-[11px] text-amber-700 block">
+                                  {meta.disclosure || 'Synthetic demonstration factor — not an official Open CEDA factor'}
+                                </span>
+                              </div>
+                            ) : (
+                              <div>
+                                <span className="font-semibold text-indigo-900 block">
+                                  {meta.source_name || 'Open CEDA EEIO'} (Official Factor)
+                                </span>
+                                <span className="text-[11px] text-slate-500 block">
+                                  {meta.attribution || 'CEDA by Watershed'} • {meta.license || 'CC BY-SA 4.0'}
+                                </span>
+                              </div>
+                            )
                           )}
                           {isAct && (
                             <div>
-                              <span className="font-semibold text-blue-900 block">CEA / IPCC Allocation</span>
-                              <span className="text-[11px] text-slate-500 block">Synthetic demonstration activity</span>
+                              <span className="font-semibold text-blue-900 block">CEA Grid + Project-Derived Diesel</span>
+                              <span className="text-[11px] text-slate-500 block">Synthetic demonstration supplier activity</span>
                             </div>
                           )}
                           {!isSpend && !isAct && (
                             <div>
-                              <span className="font-semibold text-teal-900 block">PCF Catalog Factor</span>
+                              <span className="font-semibold text-amber-800 block">Synthetic Demonstration PCF</span>
                               <span className="text-[11px] text-slate-500 block">{meta.source_name || row.factor_id}</span>
                             </div>
                           )}
@@ -381,6 +427,7 @@ export const ReportsPage: React.FC = () => {
                   })}
                 </tbody>
               </table>
+              </div>
             </div>
           )}
         </div>

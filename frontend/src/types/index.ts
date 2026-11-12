@@ -84,10 +84,18 @@ export interface EmissionFactor {
   factor_type: 'spend_based' | 'activity_based' | 'product_factor';
   name?: string;
   factor_value: number;
+  factor_value_usd?: number;
+  fx_rate?: number;
   denominator_unit: string;
   applicable_activity?: string | null;
   currency?: string | null;
+  financial_year?: string | null;
+  sector_code?: string | null;
   source_name?: string;
+  factor_version?: string;
+  data_classification?: string;
+  is_project_derived?: boolean;
+  disclosure?: string;
   version?: number;
   demo?: boolean;
   created_at?: string;
@@ -292,11 +300,19 @@ export interface ActivityBasedMethodOption {
   production_unit?: string;
   allocation_fraction?: number;
   allocation_fraction_pct?: number;
+  electricity_emissions_kgco2e?: number;
+  diesel_emissions_kgco2e?: number;
   facility_emissions_kgco2e?: number;
   precomputed_emissions_kgco2e?: number;
   precomputed_emissions_tco2e?: number;
+  grid_factor_id?: string;
   grid_factor_value?: number;
+  grid_factor_source?: string;
+  diesel_factor_id?: string;
   diesel_factor_value?: number;
+  diesel_factor_source?: string;
+  diesel_is_project_derived?: boolean;
+  diesel_disclosure?: string;
   description?: string;
 }
 
@@ -305,6 +321,10 @@ export interface SpendBasedMethodOption {
   reason_code?: string;
   reason?: string;
   factor_id?: string;
+  factor_version?: number;
+  source_name?: string;
+  is_synthetic?: boolean;
+  disclosure?: string;
   sector_code?: string;
   sector_name?: string;
   financial_year?: string;
@@ -314,7 +334,7 @@ export interface SpendBasedMethodOption {
   spend_usd?: number;
   factor_value_usd?: number;
   price_basis?: string;
-  attribution?: string;
+  attribution?: string | null;
   license?: string;
   precomputed_emissions_kgco2e?: number;
   precomputed_emissions_tco2e?: number;
@@ -348,15 +368,20 @@ export interface CalculationRun {
   factor_metadata?: {
     demo?: boolean;
     source_name?: string;
+    factor_version?: number;
+    is_synthetic?: boolean;
+    disclosure?: string;
     data_classification?: string;
-    attribution?: string;
+    attribution?: string | null;
     license?: string;
     price_basis?: string;
     proxy_year?: string;
     fx_rate?: number;
     factor_value_usd?: number;
-    grid_factor?: { id: string; factor_value: number; source?: string };
-    diesel_factor?: { id: string; factor_value: number; source?: string };
+    sector_code?: string;
+    sector_name?: string;
+    grid_factor?: { id: string; factor_value: number; version?: string | number; source?: string; is_official_reference?: boolean };
+    diesel_factor?: { id: string; factor_value: number; source?: string; calculation_basis?: string; is_project_derived?: boolean; disclosure?: string };
     description?: string;
   };
   input: Record<string, any>;

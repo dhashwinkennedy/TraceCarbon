@@ -601,8 +601,13 @@ export const CalculationsPage: React.FC = () => {
                                     })}{' '}
                                     t CO₂e
                                   </span>
+                                  {(act.electricity_emissions_kgco2e !== undefined || act.diesel_emissions_kgco2e !== undefined) && (
+                                    <span className="text-[10px] text-slate-500 block font-mono">
+                                      Elec: {formatKgCO2e(act.electricity_emissions_kgco2e)} • Diesel: {formatKgCO2e(act.diesel_emissions_kgco2e)}
+                                    </span>
+                                  )}
                                   <span className="text-[10px] text-slate-500 block">
-                                    Grid: {act.grid_factor_value} • Diesel: {act.diesel_factor_value}
+                                    CEA Grid: {act.grid_factor_value} • Derived Diesel: {act.diesel_factor_value}
                                   </span>
                                 </div>
                                 <div>
@@ -613,13 +618,16 @@ export const CalculationsPage: React.FC = () => {
                                   </span>
                                 </div>
                                 <div className="pt-2 border-t border-slate-200/60">
-                                  <span className="text-slate-500 block text-[11px]">Expected Emissions:</span>
+                                  <span className="text-slate-500 block text-[11px]">Calculated Emissions:</span>
                                   <span className="text-base font-extrabold text-blue-900 font-mono">
                                     {formatKgCO2e(act.precomputed_emissions_kgco2e)}
                                   </span>
                                   <span className="text-[11px] text-slate-500 block">
                                     ({act.precomputed_emissions_tco2e} t CO₂e)
                                   </span>
+                                </div>
+                                <div className="text-[10px] text-amber-800 bg-amber-50 border border-amber-200/70 rounded p-1.5 leading-snug">
+                                  Diesel factor is project-derived (IPCC-based assumptions). Supplier energy inputs are synthetic demonstration data.
                                 </div>
                               </div>
                             ) : (
@@ -701,17 +709,28 @@ export const CalculationsPage: React.FC = () => {
                                   </span>
                                 </div>
                                 <div className="pt-2 border-t border-slate-200/60">
-                                  <span className="text-slate-500 block text-[11px]">Open CEDA Factor & Emissions:</span>
+                                  <span className="text-slate-500 block text-[11px]">
+                                    {spd.is_synthetic ? 'Synthetic Demo Factor & Emissions:' : 'Open CEDA Factor & Emissions:'}
+                                  </span>
                                   <span className="text-base font-extrabold text-indigo-900 font-mono">
                                     {formatKgCO2e(spd.precomputed_emissions_kgco2e)}
                                   </span>
                                   <span className="text-[11px] text-slate-500 block">
                                     ({spd.precomputed_emissions_tco2e} t CO₂e @ {spd.factor_value_usd} kg/$)
                                   </span>
+                                  <span className="text-[10px] font-mono text-slate-600 block">
+                                    Source: {spd.source_name || 'Open CEDA'} (v{spd.factor_version || 1})
+                                  </span>
                                 </div>
-                                <div className="text-[10px] text-indigo-700 italic">
-                                  Attribution: CEDA by Watershed • CC BY-SA 4.0
-                                </div>
+                                {spd.is_synthetic ? (
+                                  <div className="text-[10px] text-amber-800 bg-amber-50 border border-amber-200 rounded p-1.5 font-medium">
+                                    {spd.disclosure || 'Synthetic demonstration factor — not an official Open CEDA factor'}
+                                  </div>
+                                ) : (
+                                  <div className="text-[10px] text-indigo-700 italic">
+                                    Official Reference • {spd.attribution || 'CEDA by Watershed'} • {spd.license || 'CC BY-SA 4.0'}
+                                  </div>
+                                )}
                               </div>
                             ) : (
                               <div className="p-2 rounded bg-amber-50 text-amber-900 text-xs space-y-1">

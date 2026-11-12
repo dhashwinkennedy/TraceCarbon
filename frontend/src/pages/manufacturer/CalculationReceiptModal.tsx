@@ -189,21 +189,31 @@ export const CalculationReceiptModal: React.FC<CalculationReceiptModalProps> = (
               </span>
               <div className="bg-slate-50 rounded-xl border border-slate-200 p-4 space-y-2.5 text-xs">
                 {elecComp && (
-                  <div className="flex justify-between items-center py-1 border-b border-slate-200/50">
-                    <div className="flex items-center gap-1.5 text-slate-600">
-                      <Zap className="w-3.5 h-3.5 text-amber-500" />
-                      <span>Grid Electricity: {formatNumber(elecComp.value)} {elecComp.unit} × {elecComp.factor_value}</span>
+                  <div className="py-1 border-b border-slate-200/50 space-y-0.5">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-1.5 text-slate-600">
+                        <Zap className="w-3.5 h-3.5 text-amber-500" />
+                        <span>Grid Electricity: {formatNumber(elecComp.value)} {elecComp.unit} × {elecComp.factor_value} kg/kWh</span>
+                      </div>
+                      <span className="font-mono font-bold text-slate-800">{formatKgCO2e(elecComp.emissions_kgco2e)}</span>
                     </div>
-                    <span className="font-mono font-bold text-slate-800">{formatKgCO2e(elecComp.emissions_kgco2e)}</span>
+                    <span className="text-[10px] text-slate-500 block pl-5">
+                      Official Reference: {factorMeta.grid_factor?.source || elecComp.source_name || elecComp.factor_id}
+                    </span>
                   </div>
                 )}
                 {dieselComp && (
-                  <div className="flex justify-between items-center py-1 border-b border-slate-200/50">
-                    <div className="flex items-center gap-1.5 text-slate-600">
-                      <Fuel className="w-3.5 h-3.5 text-blue-500" />
-                      <span>Diesel Fuel: {formatNumber(dieselComp.value)} {dieselComp.unit} × {dieselComp.factor_value}</span>
+                  <div className="py-1 border-b border-slate-200/50 space-y-0.5">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-1.5 text-slate-600">
+                        <Fuel className="w-3.5 h-3.5 text-blue-500" />
+                        <span>Stationary Diesel: {formatNumber(dieselComp.value)} {dieselComp.unit} × {dieselComp.factor_value} kg/L</span>
+                      </div>
+                      <span className="font-mono font-bold text-slate-800">{formatKgCO2e(dieselComp.emissions_kgco2e)}</span>
                     </div>
-                    <span className="font-mono font-bold text-slate-800">{formatKgCO2e(dieselComp.emissions_kgco2e)}</span>
+                    <span className="text-[10px] text-amber-800 block pl-5">
+                      Project-derived IPCC-based factor using project assumptions (not a universal directly published IPCC factor).
+                    </span>
                   </div>
                 )}
                 {facComp && (
@@ -277,9 +287,17 @@ export const CalculationReceiptModal: React.FC<CalculationReceiptModalProps> = (
                   </span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-200/50">
-                  <span className="text-slate-500">Open CEDA Factor</span>
+                  <span className="text-slate-500">
+                    {factorMeta.is_synthetic || spendComp?.is_synthetic ? 'Synthetic Demo Factor' : 'Open CEDA Factor'}
+                  </span>
                   <span className="font-mono text-slate-800 font-bold">
                     {spendComp?.factor_value_usd ?? factorMeta.factor_value_usd} kg CO₂e / USD
+                  </span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-200/50">
+                  <span className="text-slate-500">Factor Source & Version</span>
+                  <span className="font-mono text-slate-800">
+                    {factorMeta.source_name || spendComp?.source_name || 'Open CEDA'} (v{factorMeta.factor_version ?? receiptData.factor_version ?? 1})
                   </span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-200/50">
@@ -294,14 +312,23 @@ export const CalculationReceiptModal: React.FC<CalculationReceiptModalProps> = (
                 </div>
               </div>
 
-              {/* CEDA Attribution and CC BY-SA 4.0 Notice */}
-              <div className="p-3 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-900 text-xs flex items-start gap-2">
-                <Info className="w-4 h-4 shrink-0 text-indigo-600 mt-0.5" />
-                <div>
-                  <span className="font-bold block">Data Attribution & License:</span>
-                  <span>CEDA by Watershed • Licensed under Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).</span>
+              {factorMeta.is_synthetic || spendComp?.is_synthetic ? (
+                <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" />
+                  <div>
+                    <span className="font-bold block">Synthetic Demonstration Factor Notice:</span>
+                    <span>{factorMeta.disclosure || spendComp?.disclosure || 'Synthetic demonstration factor — not an official Open CEDA factor'}</span>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="p-3 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-900 text-xs flex items-start gap-2">
+                  <Info className="w-4 h-4 shrink-0 text-indigo-600 mt-0.5" />
+                  <div>
+                    <span className="font-bold block">Data Attribution & License:</span>
+                    <span>{factorMeta.attribution || 'CEDA by Watershed'} • Licensed under {factorMeta.license || 'CC BY-SA 4.0'}.</span>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
